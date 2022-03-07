@@ -1,0 +1,15 @@
+define dd
+  x/64xw $arg0
+end
+
+define ddx
+  x/256xw $arg0
+end
+
+define ddh
+  x/32xg $arg0
+end
+
+define ddhx
+  x/256xg $arg0
+end
