@@ -6,7 +6,7 @@ apt update -y
 
 ## development tooling
 apt install -y vim git flex bison manpages nkf libncurses5 patch expect screen lsof lshw mlocate 
-apt install -y git zip unzip rar unrar cpio p7zip-full lzip
+apt install -y zip unzip rar unrar cpio p7zip-full lzip
 apt install -y gcc g++ clang make automake autogen autoconf cmake ninja
 apt install -y binutils strace ltrace gdb gdbserver elfutils nasm radare2 rr dwarfdump 
 apt install -y gcc-multilib g++-multilib binutils-multiarch gdb-multiarch  
@@ -30,6 +30,12 @@ apt install -y openssh-server dnsutils
 ## emulator/vmm
 apt install -y busybox-static docker.io qemu-user qemu-utils fakeroot u-boot-tools
 
+## my development env setup 
+git config --global user.name "1u991yu24k1"
+git config --global user.email mycd9427@gmail.com
+git config --global core.editor /usr/bin/vim
+
+
 ## non-apt tools for pwnable
 python3 -m pip --upgrade pip hexdump pwntools z3-solver angr
 gem install one_gadget
@@ -47,7 +53,6 @@ cp -p ~/dl/rp/src/build/rp-lin-x64 /usr/local/bin/rp-lin-x64
 
 ### gef
 wget -q https://raw.githubusercontent.com/bata24/gef/dev/install.sh -O- | bash
-wget -q https://github.com/1u991yu24k1/my_ctf_tools/blob/main/gdb_init.txt -O ~/.gdbinit
 
 ### add debug symbols
 sed -i -e 's/^# \(deb-src\)/\1/g' /etc/apt/sources.list
@@ -56,12 +61,6 @@ cd /usr/src/
 apt source libc6
 cd glibc-*
 mv ../glibc_*.debian.tar.xz ../glibc_*.dsc ../glibc_*.orig.tar.xz .
-
-## my development env setup 
-wget -q https://raw.githubusercontent.com/1u991yu24k1/my_ctf_tools/main/vimrc -O ~/.vimrc
-git config --global user.name "1u991yu24k1"
-git config --global user.email mycd9427@gmail.com
-git config --global core.editor /usr/bin/vim
 
 ## -> gdbinit 
 echo "dir $(pwd)/elf/"             >> ~/.gdbinit
@@ -96,37 +95,54 @@ make clean
 ### i386
 ./configure --target-list=i386-softmmu && make -j
 mv i386-softmmu/qemu-system-i386 /usr/local/bin/qemu"$QM_VER"-system-i386
+ln -s /usr/local/bin/qemu"$QM_VER"-system-i386 /usr/local/bin/qemu-system-i386
 make clean
-echo "$"
 
 ### x64
 ./configure --target-list=x86_64-softmmu && make -j
 mv x86_64-softmmu/qemu-system-x86_64 /usr/local/bin/qemu"$QM_VER"-system-x64
+ln -s /usr/local/bin/qemu"$QM_VER"-system-x86_64 /usr/local/bin/qemu-system-x86_64
 make clean
 
 ### arm
 ./configure --target-list=arm-softmmu && make -j
 mv arm-softmmu/qemu-system-arm /usr/local/bin/qemu"$QM_VER"-system-arm
+ln -s /usr/local/bin/qemu"$QM_VER"-system-arm /usr/local/bin/qemu-system-arm
 make clean
 
 ### aarch64
 ./configure --target-list=aarch64-softmmu && make -j
 mv aarch64-softmmu/qemu-system-aarch64 /usr/local/bin/qemu"$QM_VER"-system-aarch64
+ln -s /usr/local/bin/qemu"$QM_VER"-system-aarch64 /usr/local/bin/qemu-system-aarch64
 make clean
 
 ### riscv32
 ./configure --target-list=risv32-softmmu && make -j
 mv riscv32-softmmu/qemu-system-risv32 /usr/local/bin/qemu"$QM_VER"-system-riscv32
+ln -s /usr/local/bin/qemu"$QM_VER"-system-risv32 /usr/local/bin/qemu-system-risv32
 make clean
 
 ### riscv64
 ./configure --target-list=risv64-softmmu && make -j
 mv riscv64-softmmu/qemu-system-arm /usr/local/bin/qemu"$QM_VER"-system-riscv64
+ln -s /usr/local/bin/qemu"$QM_VER"-system-risv64 /usr/local/bin/qemu-system-risv64
 make clean
 
 unset QEMU_VERSION
 unset QM_VER
 
-## Linux kernel source code
 cd /exports
+git clone ctftools:1u991yu24k1/my_ctf_tools.git 
+cd my_ctf_tools
+## lsenum command 
+make && cp -p lsenum /usr/local/bin/lsenum && male clean
+cat gdb_init.txt >> ~/.gdbinit
+cp -r vimrc ~/.vimrc
+cp -r bashrc ~/.bashrc
+cp -r ctf.sh /usr/local/bin/ctf.sh && chmod +x /usr/local/bin/ctf.sh
+
+cd ../
+
+
+## Linux kernel source code
 glt clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
