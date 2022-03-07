@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 #-*-coding:utf-8-*-
 
-import socket, telnetlib, struct, hexdump, subprocess, sys, logging, time
+import socket, telnetlib, struct, sys, logging 
 
-logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+logging.basicConfig(level=logging.DEBUG, format="[*] %(message)s")
 cs, ce = '\x1b[93;41m', '\x1b[0m' # white
 
 def dbg(ss):
@@ -64,10 +64,9 @@ if len(sys.argv) == 2 and sys.argv[1] == 'r':
   banner = 'remote'
   HOST, PORT = '<remote-host>', 1337
 
-logging.info(banner)
+inf(banner)
 s, f = sock(HOST, PORT)
 ### exploit from here ###
 
 
-### end of exploit ###
 shell(s)
