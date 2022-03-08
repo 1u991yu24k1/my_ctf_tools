@@ -35,8 +35,7 @@ git config --global user.name "1u991yu24k1"
 git config --global user.email mycd9427@gmail.com
 git config --global core.editor /usr/bin/vim
 
-
-## non-apt tools for pwnable
+## non apt tools for pwnable
 python3 -m pip --upgrade pip hexdump pwntools z3-solver angr
 gem install one_gadget
 gem install seccomp-tools
@@ -62,23 +61,21 @@ apt source libc6
 cd glibc-*
 mv ../glibc_*.debian.tar.xz ../glibc_*.dsc ../glibc_*.orig.tar.xz .
 
-## -> gdbinit 
-echo "dir $(pwd)/elf/"             >> ~/.gdbinit
-echo "dir $(pwd)/io/"              >> ~/.gdbinit
-echo "dir $(pwd)/libio/"           >> ~/.gdbinit
-echo "dir $(pwd)/stdlib/"          >> ~/.gdbinit
-echo "dir $(pwd)/malloc/"          >> ~/.gdbinit
-echo "dir $(pwd)/string/"          >> ~/.gdbinit
-echo "dir $(pwd)/stdio-common/"    >> ~/.gdbinit
-echo "dir $(pwd)/signal/"          >> ~/.gdbinit
-echo "dir $(pwd)/setjmp/"          >> ~/.gdbinit
-echo "dir $(pwd)/posix/"           >> ~/.gdbinit
+### -> gdbinit 
+echo "dir $(pwd)/elf/"                >> ~/.gdbinit
+echo "dir $(pwd)/io/"                 >> ~/.gdbinit
+echo "dir $(pwd)/libio/"              >> ~/.gdbinit
+echo "dir $(pwd)/stdlib/"             >> ~/.gdbinit
+echo "dir $(pwd)/malloc/"             >> ~/.gdbinit
+echo "dir $(pwd)/string/"             >> ~/.gdbinit
+echo "dir $(pwd)/stdio-common/"       >> ~/.gdbinit
+echo "dir $(pwd)/signal/"             >> ~/.gdbinit
+echo "dir $(pwd)/setjmp/"             >> ~/.gdbinit
+echo "dir $(pwd)/posix/"              >> ~/.gdbinit
 echo "dir $(pwd)/sysdeps/$(uname -p)" >> ~/.gdbinit
 
-## optinal tools( for my analysis )
 mkdir -p /exports
 cd /exports 
-git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 
 ## qemu system(i386, x86_64, arm, aarch64, riscv32, riscv64)
 apt build-dep qemu
@@ -146,3 +143,6 @@ cd ../
 
 ## Linux kernel source code
 glt clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+cd linux/
+make mrproper
+
