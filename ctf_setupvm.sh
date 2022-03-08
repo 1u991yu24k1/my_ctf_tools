@@ -36,7 +36,8 @@ git config --global user.email mycd9427@gmail.com
 git config --global core.editor /usr/bin/vim
 
 ## non apt tools for pwnable
-python3 -m pip --upgrade pip hexdump pwntools z3-solver angr
+python3 -m pip --upgrade pip 
+python3 -m pip install hexdump pwntools z3-solver angr
 gem install one_gadget
 gem install seccomp-tools
 
