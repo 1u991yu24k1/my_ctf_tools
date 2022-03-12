@@ -188,6 +188,39 @@ def inverse(a, p):
     raise Exception('gcd(a,p) != 1')        
   return x%p
 
+
+def crt(xx, mm):
+  """
+  args:
+    xx: [x1, x2, ,,,, xn]
+    mm: [m1, m2, ,,,, mn]
+    
+  returns:
+    x such that
+      x = x1 mod m1
+      x = x2 mod m2
+      x = x3 mod m3
+        :
+      x = xn mod mn
+  """
+  assert(len(xx) == len(mm))
+  for i, mi in enumerate(mm):
+    for j,mj in enumerate(mm):
+      if gcd(mi, mj) != 1 and i != j:
+        raise ValueError("[!] moduli should be pair wise coprime")
+  M = reduce(mul, mm)
+  bb = [M // m for m in mm]
+    
+  assert(len(bb) == len(mm))
+  try:
+    bb_inv = [inverse(b, m) for b, m in zip(bb, mm)]
+  except:
+    print("[!] Error: Encounted error while calculating bb_inv") 
+    return -1
+    
+  X = sum([x * b * b_inv for x,b,b_inv in zip(xx, bb, bb_inv)])
+  return X % M
+
 rotword = lambda word:word[1:] + word[:1]#left shift
 inv_rotword = lambda word:word[-1:] + word[:-1]#right shift
 xtime = lambda x:x << 1 if x < 0x80 else ((x << 1) & 0xff) ^ 0x1b
@@ -250,9 +283,6 @@ InvSbox = (
     0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,
     0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d 
 )
-
-
-
 
 Table4mixcolumns = (
     (0x02,0x03,0x01,0x01),
