@@ -1,7 +1,17 @@
 #!/usr/bin/python3
 #-*-coding:utf-8-*-
 
-import socket, telnetlib, struct, hexdump, subprocess, sys, logging, time
+import socket
+import telnetlib
+import struct
+import hexdump
+import subprocess
+import sys
+import logging
+import time
+import math
+from functools import reduce
+from operator import mul
 
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 cs, ce = '\x1b[93;41m', '\x1b[0m' # white
@@ -167,7 +177,6 @@ def mkasm(code):
   
 
 ############## Crypto ###############
-import math
 
 def gcd(a,b):
   return math.gcd(a,b)
