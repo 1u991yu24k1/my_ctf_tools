@@ -230,10 +230,11 @@ def crt(xx, mm):
   X = sum([x * b * b_inv for x,b,b_inv in zip(xx, bb, bb_inv)])
   return X % M
 
-rotword = lambda word:word[1:] + word[:1]#left shift
+rotword     = lambda word:word[1:] + word[:1]  #left shift
 inv_rotword = lambda word:word[-1:] + word[:-1]#right shift
-xtime = lambda x:x << 1 if x < 0x80 else ((x << 1) & 0xff) ^ 0x1b
 
+### AES primitive over poly-ring
+xtime       = lambda x:x << 1 if x < 0x80 else ((x << 1) & 0xff) ^ 0x1b
 def mul_over2_8(x,y):
   r = 0
   s = x
@@ -241,7 +242,6 @@ def mul_over2_8(x,y):
     if i == "1":
       r = r ^ s
     s = xtime(s)
-        
   return r
 
 RconFull = (0x01,0x02,0x04,0x08,0x10,0x20,0x40,
@@ -335,7 +335,6 @@ def keyexpansion(key,current_r):
 def addroundkey(state,roundkey):
     return [s ^ r for s,r in zip(state,roundkey)]
 
-
 def shiftrows(state):
     newstate = [0] * 16
 
@@ -404,10 +403,8 @@ def inv_subbytes(state):
 def round_enc(state,roundkey):
     return addroundkey(mixcolumns(shiftrows(subbytes(state))),roundkey)
 
-
 def round_enc_final(state,roundkey):
     return addroundkey(shiftrows(subbytes(state)),roundkey)
-
 
 def encrypt128(plain,key):
     state = plain
@@ -471,57 +468,6 @@ class AES(object):
         
     
     
-class AES_dev(object):
-    @classmethod
-    def AddRoundKey(cls,state,roundkey):
-        return addroundkey(state,roundkey)
-    @classmethod
-    def getSboxValue(cls,byte):
-        return Sbox[byte]
-    
-    @classmethod
-    def SubBytes(cls,state):
-        return subbytes(state)
-
-    @classmethod
-    def InvSubBytes(cls,state):
-       return inv_subbytes(state)
-
-    @classmethod
-    def MixColumns(cls,state):
-        return mixcolumns(state)
-
-    @classmethod
-    def ShiftRows(cls,state):
-        return shiftrows(state)
-
-    @classmethod
-    def InvSubBytes(cls,state):
-        return invsubbytes(state)
-
-    @classmethod
-    def KeyExpansion(cls,key,roundidx):
-        return keyexpansion(key,roundidx)
-
-    @classmethod
-    def cont_KeyExpansion(cls,roundkey,roundidx):
-        pass
-        
-    @classmethod
-    def getRoundKey(cls,key,roundnum):
-        roundkey = key[:]
-        for i in range(roundnum):
-            roundkey = keyexpansion(roundkey,i)
-        return roundkey
-    
-    @classmethod
-    def getMasterKeyFromRK(cls, roundkey,roundidx):
-        pass
-
-    @classmethod
-    def roundEnc(cls,state,roundkey):
-        return mixcolumns(subbytes(shiftrows(addroundkey(state,roundkey))))
-     
 #############################################################################################
 banner = 'test'
 HOST, PORT = '127.0.0.1', 1337 
