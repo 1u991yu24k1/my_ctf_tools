@@ -53,6 +53,7 @@ int main(int argc, char **argv){
     printf("EMLINK \t: %4d : 0x%lx\n", -EMLINK, (unsigned long)(-EMLINK));
     printf("EXDEV  \t: %4d : 0x%lx\n", -EXDEV,  (unsigned long)(-EXDEV));
     printf("ESRCH  \t: %4d : 0x%lx\n", -ESRCH,  (unsigned long)(-ESRCH));    
+    
     puts("========= OPEN FLAGS ==========");
     printf("O_RDONLY   : 0x%08x\n", O_RDONLY);
     printf("O_WRONLY   : 0x%08x\n", O_WRONLY);
@@ -73,6 +74,11 @@ int main(int argc, char **argv){
     printf("O_NONBLOCK : 0x%08x\n", O_NONBLOCK);
     printf("O_NDELAY   : 0x%08x\n", O_NDELAY);
     printf("O_SYNC     : 0x%08x\n", O_SYNC);
+    
+    printf("_IONBF     : 0x%08x\n", _IONBF);
+    printf("_IOLBF     : 0x%08x\n", _IOLBF);
+    printf("_IOFBF     : 0x%08x\n", _IOFBF);
+    
     puts("======== OPENAT/LINKAT FLAG ========");
     printf("AT_FDCWD             : 0x%08x\n", AT_FDCWD);
     printf("AT_SYMLINK_FOLLOW    : 0x%08x\n", AT_SYMLINK_FOLLOW);
