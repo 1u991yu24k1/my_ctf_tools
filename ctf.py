@@ -19,7 +19,7 @@ def dbg(ss):
   logging.debug(cs + fmt + ce)
 
 def inf(ss):
-  logging.info("[*] %s"%ss)
+  logging.info("%s"%ss)
 
 def sock(host, port):
   s = socket.create_connection((host, port))
