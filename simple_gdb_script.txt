@@ -1,0 +1,63 @@
+set disassembly-flavor intel
+set pagination off
+
+define dd
+  x/64xw $arg0
+end
+
+define ddx
+  x/256xw $arg0
+end
+
+define ddh
+  x/32xg $arg0
+end
+
+define ddhx
+  x/256xg $arg0
+end
+
+define ii
+  x/32i $pc
+end
+
+define mycontext
+  echo  ##### context   #####\n
+  echo  \t##### registers #####\n
+  printf "\trip: 0x%016x\n", $rip
+  printf "\trbx: 0x%016x\n", $rbp
+  printf "\trax: 0x%016x\n", $rax
+  printf "\trbx: 0x%016x\n", $rbx
+  printf "\trcx: 0x%016x\n", $rcx
+  printf "\trdx: 0x%016x\n", $rdx
+  printf "\tr8 : 0x%016x\n", $r8
+  printf "\tr9 : 0x%016x\n", $r9
+  printf "\tr10: 0x%016x\n", $r10
+  printf "\tr11: 0x%016x\n", $r11
+  printf "\tr12: 0x%016x\n", $r12
+  printf "\tr13: 0x%016x\n", $r13
+  printf "\tr14: 0x%016x\n", $r15
+
+  echo  ##### Code       #####\n
+  x/16i $rip
+  
+  echo  ##### Stack      #####\n
+  set $_i = 0
+  set $_slen = 0x10
+  while ($_i < $_slen)
+    set $_stk = $rsp + $_i
+    printf "rsp+%02x: 0x%016x\n", $_i, $_stk
+    set $_i = $_i + 1
+  end
+end
+
+
+define mytelescope
+  set $_i = 0
+  set $_slen = 0x20
+  while ($_i < $_slen)
+    set $_stk = $rsp + $_i
+    printf "rsp+%02x: 0x%016x\n", $_i, $_stk
+    set $_i = $_i + 1
+  end
+end
