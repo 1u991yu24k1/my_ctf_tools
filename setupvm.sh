@@ -145,6 +145,8 @@ cd ../
 
 ## Linux kernel source code
 git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+wget -O /usr/local/bin/extract-vmlinux https://raw.githubusercontent.com/torvalds/linux/master/scripts/extract-vmlinux
+chmod +x /usr/local/bin/extract-vmlinux
 cd linux/
 make mrproper
 
