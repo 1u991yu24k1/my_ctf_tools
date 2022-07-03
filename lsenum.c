@@ -1,6 +1,8 @@
 #define _GNU_SOURCE
 
 #include <stdio.h>
+#include <wchar.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
@@ -12,47 +14,64 @@
 #include <sys/ptrace.h>
 
 int main(int argc, char **argv){
-    puts("======== ERROR ENUMS =========");
-    printf("EACCES \t: %4d : 0x%lx\n", -EACCES, (unsigned long)(-EACCES));
-    printf("EINVAL \t: %4d : 0x%lx\n", -EINVAL, (unsigned long)(-EINVAL));
-    printf("EBUSY  \t: %4d : 0x%lx\n", -EBUSY,  (unsigned long)(-EBUSY));
-    printf("EDQUOT \t: %4d : 0x%lx\n", -EDQUOT, (unsigned long)(-EDQUOT));
-    printf("EEXSIST\t: %4d : 0x%lx\n", -EACCES, (unsigned long)(-EEXIST));
-    printf("EFAULT \t: %4d : 0x%lx\n", -EFAULT, (unsigned long)(-EFAULT));
-
-    printf("EFBIG  \t: %4d : 0x%lx\n", -EFBIG,  (unsigned long)(-EFBIG));
-    printf("EINTR  \t: %4d : 0x%lx\n", -EINTR,  (unsigned long)(-EINTR));
-    printf("EISDIR \t: %4d : 0x%lx\n", -EISDIR, (unsigned long)(-EISDIR));
-    printf("ELOOP  \t: %4d : 0x%lx\n", -ELOOP,  (unsigned long)(-ELOOP));
+    puts("======== sizeof(X)   =========");
+    printf("sizeof(void)               : %lu\n", sizeof(void));
+    printf("sizeof(void *)             : %lu\n", sizeof(void *));
+    printf("sizeof(char)               : %lu\n", sizeof(char));
+    printf("sizeof(unsigned char)      : %lu\n", sizeof(unsigned char));
+    printf("sizeof(wchar_t)            : %lu\n", sizeof(wchar_t));
     
-    printf("EMFILE \t: %4d : 0x%lx\n", -EMFILE, (unsigned long)(-EMFILE));
-    printf("EINTR  \t: %4d : 0x%lx\n", -EINTR,  (unsigned long)(-EINTR));
-    printf("EISDIR \t: %4d : 0x%lx\n", -EISDIR, (unsigned long)(-EISDIR));
+    printf("sizeof(short)              : %lu\n", sizeof(short));
+    printf("sizeof(unsigned short)     : %lu\n", sizeof(unsigned short));
+    printf("sizeof(int)                : %lu\n", sizeof(int));
+    printf("sizeof(unsigned int)       : %lu\n", sizeof(unsigned int));
+    printf("sizeof(long)               : %lu\n", sizeof(long));
+    printf("sizeof(long long)          : %lu\n", sizeof(long long));
+    printf("sizeof(unsigned long)      : %lu\n", sizeof(unsigned long));
+    printf("sizeof(unsigned long long) : %lu\n", sizeof(unsigned long long));
+    printf("sizeof(time_t)             : %lu\n", sizeof(time_t));
+    printf("sizeof(bool)               : %lu\n", sizeof(bool));
+    puts("======== ERROR ENUMS =========");
+    printf("EACCES       \t: %4d : 0x%lx\n", -EACCES, (unsigned long)(-EACCES));
+    printf("EINVAL       \t: %4d : 0x%lx\n", -EINVAL, (unsigned long)(-EINVAL));
+    printf("EBUSY        \t: %4d : 0x%lx\n", -EBUSY,  (unsigned long)(-EBUSY));
+    printf("EDQUOT       \t: %4d : 0x%lx\n", -EDQUOT, (unsigned long)(-EDQUOT));
+    printf("EEXSIST      \t: %4d : 0x%lx\n", -EACCES, (unsigned long)(-EEXIST));
+    printf("EFAULT       \t: %4d : 0x%lx\n", -EFAULT, (unsigned long)(-EFAULT));
+
+    printf("EFBIG        \t: %4d : 0x%lx\n", -EFBIG,  (unsigned long)(-EFBIG));
+    printf("EINTR        \t: %4d : 0x%lx\n", -EINTR,  (unsigned long)(-EINTR));
+    printf("EISDIR       \t: %4d : 0x%lx\n", -EISDIR, (unsigned long)(-EISDIR));
+    printf("ELOOP        \t: %4d : 0x%lx\n", -ELOOP,  (unsigned long)(-ELOOP));
+    
+    printf("EMFILE       \t: %4d : 0x%lx\n", -EMFILE, (unsigned long)(-EMFILE));
+    printf("EINTR        \t: %4d : 0x%lx\n", -EINTR,  (unsigned long)(-EINTR));
+    printf("EISDIR       \t: %4d : 0x%lx\n", -EISDIR, (unsigned long)(-EISDIR));
     printf("ENAMETOOLONG \t: %4d : 0x%lx\n", -ENAMETOOLONG, (unsigned long)(-ENAMETOOLONG));
     
-    printf("ENFILE \t: %4d : 0x%lx\n", -ENFILE, (unsigned long)(-ENFILE));
-    printf("ENODEV \t: %4d : 0x%lx\n", -ENODEV, (unsigned long)(-ENODEV));
-    printf("ENOENT \t: %4d : 0x%lx\n", -ENOENT, (unsigned long)(-ENOENT));
-    printf("ENOMEM \t: %4d : 0x%lx\n", -ENOMEM, (unsigned long)(-ENOMEM));
+    printf("ENFILE       \t: %4d : 0x%lx\n", -ENFILE, (unsigned long)(-ENFILE));
+    printf("ENODEV       \t: %4d : 0x%lx\n", -ENODEV, (unsigned long)(-ENODEV));
+    printf("ENOENT       \t: %4d : 0x%lx\n", -ENOENT, (unsigned long)(-ENOENT));
+    printf("ENOMEM       \t: %4d : 0x%lx\n", -ENOMEM, (unsigned long)(-ENOMEM));
     
-    printf("ENOSPC \t: %4d : 0x%lx\n", -ENOSPC, (unsigned long)(-ENOSPC));
-    printf("ENOTDIR\t: %4d : 0x%lx\n", -ENOTDIR,(unsigned long)(-ENOTDIR));
-    printf("ENXIO  \t: %4d : 0x%lx\n", -ENXIO,  (unsigned long)(-ENXIO));
-    printf("EOPNOTSUPP\t: %4d : 0x%lx\n", -EOPNOTSUPP, (unsigned long)(-EOPNOTSUPP));
+    printf("ENOSPC       \t: %4d : 0x%lx\n", -ENOSPC, (unsigned long)(-ENOSPC));
+    printf("ENOTDIR      \t: %4d : 0x%lx\n", -ENOTDIR,(unsigned long)(-ENOTDIR));
+    printf("ENXIO        \t: %4d : 0x%lx\n", -ENXIO,  (unsigned long)(-ENXIO));
+    printf("EOPNOTSUPP   \t: %4d : 0x%lx\n", -EOPNOTSUPP, (unsigned long)(-EOPNOTSUPP));
     
-    printf("EOVERFLOW\t: %4d : 0x%lx\n", -EOVERFLOW, (unsigned long)(-EOVERFLOW));
-    printf("EPERM  \t: %4d : 0x%lx\n", -EPERM,  (unsigned long)(-EPERM));
-    printf("EROFS  \t: %4d : 0x%lx\n", -EROFS,  (unsigned long)(-EROFS));
-    printf("ETXTBSY\t: %4d : 0x%lx\n", -ETXTBSY,(unsigned long)(-ETXTBSY));
+    printf("EOVERFLOW    \t: %4d : 0x%lx\n", -EOVERFLOW, (unsigned long)(-EOVERFLOW));
+    printf("EPERM        \t: %4d : 0x%lx\n", -EPERM,  (unsigned long)(-EPERM));
+    printf("EROFS        \t: %4d : 0x%lx\n", -EROFS,  (unsigned long)(-EROFS));
+    printf("ETXTBSY      \t: %4d : 0x%lx\n", -ETXTBSY,(unsigned long)(-ETXTBSY));
 
-    printf("EWOULDBLOCK\t: %4d : 0x%lx\n", -EWOULDBLOCK, (unsigned long)(-EWOULDBLOCK));
-    printf("EBADF  \t: %4d : 0x%lx\n", -EBADF,  (unsigned long)(-EBADF));
-    printf("ENOTDIR\t: %4d : 0x%lx\n", -ENOTDIR,(unsigned long)(-ENOTDIR));
-    printf("EIO    \t: %4d : 0x%lx\n", -EIO,    (unsigned long)(-EIO));
-    printf("ELOOP  \t: %4d : 0x%lx\n", -ELOOP,  (unsigned long)(-ELOOP));
-    printf("EMLINK \t: %4d : 0x%lx\n", -EMLINK, (unsigned long)(-EMLINK));
-    printf("EXDEV  \t: %4d : 0x%lx\n", -EXDEV,  (unsigned long)(-EXDEV));
-    printf("ESRCH  \t: %4d : 0x%lx\n", -ESRCH,  (unsigned long)(-ESRCH));    
+    printf("EWOULDBLOCK  \t: %4d : 0x%lx\n", -EWOULDBLOCK, (unsigned long)(-EWOULDBLOCK));
+    printf("EBADF        \t: %4d : 0x%lx\n", -EBADF,  (unsigned long)(-EBADF));
+    printf("ENOTDIR      \t: %4d : 0x%lx\n", -ENOTDIR,(unsigned long)(-ENOTDIR));
+    printf("EIO          \t: %4d : 0x%lx\n", -EIO,    (unsigned long)(-EIO));
+    printf("ELOOP        \t: %4d : 0x%lx\n", -ELOOP,  (unsigned long)(-ELOOP));
+    printf("EMLINK       \t: %4d : 0x%lx\n", -EMLINK, (unsigned long)(-EMLINK));
+    printf("EXDEV        \t: %4d : 0x%lx\n", -EXDEV,  (unsigned long)(-EXDEV));
+    printf("ESRCH        \t: %4d : 0x%lx\n", -ESRCH,  (unsigned long)(-ESRCH));    
     
     puts("========= OPEN FLAGS ==========");
     printf("O_RDONLY   : 0x%08x\n", O_RDONLY);
