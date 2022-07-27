@@ -12,6 +12,11 @@ apt install -y binutils strace ltrace gdb gdbserver elfutils dwarves nasm radare
 apt install -y gcc-multilib g++-multilib binutils-multiarch gdb-multiarch  
 apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses5:i386 libstdc++6:i386 libc6-dbg:i386
 
+## Rust(rustc, cargo)
+apt install -y rustc
+curl https://sh.rustup.rs -sSf | sh 
+cargo install rustfilt
+#TODO: add "$HOME/.cargo/bin" to $PATH in .bashrc
 ## scripting 
 apt install -y perl python3 python3-dev ruby ruby-dev php 
 
