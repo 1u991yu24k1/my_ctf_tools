@@ -25,10 +25,12 @@ def sock(host, port):
   s = socket.create_connection((host, port))
   return s, s.makefile('rwb', buffering=None)
 
-def read_until(f, delim=b'\n',textwrap=False):
-  if type(delim) is str: delim = delim.encode()
+def readuntil(f, delim=b'\n',textwrap=False):
+  if type(delim) is str: 
+    delim = delim.encode()
   dat = b''
-  while not dat.endswith(delim): dat += f.read(1)
+  while not dat.endswith(delim): 
+    dat += f.read(1)
   return dat if not textwrap else dat.decode()
 
 def readline_after(f, skip_until, delim=b'\n'):
@@ -37,8 +39,9 @@ def readline_after(f, skip_until, delim=b'\n'):
   return read_until(f, delim).strip(delim)
 
 def sendline(f, line):
-  if type(line) is str: line = (line + '\n').encode()
-  f.write(line) # no tailing LF in bytes
+  if type(line) is str: 
+    line = line.encode()
+  f.write(line + b'\n') 
   f.flush()
 
 def sendline_after(f, waitfor, line):
@@ -58,11 +61,11 @@ def shell(s):
     
 
 ##### addrs/offsets of symbols, gadgets and consts #####
-       
-banner, HOST, PORT = 'test', '127.0.0.1', 1337 
+HOST, PORT = '127.0.0.1', 1337 
+banner = 'local-> %s %d'%(HOST, PORT) 
 if len(sys.argv) == 2 and sys.argv[1] == 'r':
-  banner = 'remote'
   HOST, PORT = '<remote-host>', 1337
+  banner = 'remote-> %s %d'%(HOST, PORT)
 
 inf(banner)
 s, f = sock(HOST, PORT)
