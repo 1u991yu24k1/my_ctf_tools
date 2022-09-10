@@ -35,6 +35,6 @@ RUN wget -q https://raw.githubusercontent.com/1u991yu24k1/my_ctf_tools/main/bash
 
 
 ## run: 
-## docker run [-it] --name plab2004 -v$(pwd):/pwnlab -p1337:1337 -p1234:1234 <this_image>
+## docker run [-it] --cap-add=SYS_PTACE --name plab2004 -v$(pwd):/pwnlab -p1337:1337 -p1234:1234 <this_image>
 ## enter container
 ## docker exec -it bash

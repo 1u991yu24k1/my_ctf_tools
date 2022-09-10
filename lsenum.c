@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/ptrace.h>
+#include <seccomp.h>
 
 int main(int argc, char **argv){
     puts("======== sizeof(X)   =========");
@@ -233,5 +234,15 @@ int main(int argc, char **argv){
     printf("PTRACE_EVENT_CLONE       : 0x%08x\n", PTRACE_EVENT_CLONE);    
     printf("PTRACE_EVENT_VFORK_DONE  : 0x%08x\n", PTRACE_EVENT_VFORK_DONE); 
     printf("PTRACE_EVENT_EXIT        : 0x%08x\n", PTRACE_EVENT_EXIT);   
+
+    puts("--------------------------------------------------------------------- seccomp consts");
+    printf("SECCOMP_SET_MODE_STRICT         : 0x%x\n", SECCOMP_SET_MODE_STRICT);
+    printf("SECCOMP_SET_MODE_FILTER         : 0x%x\n", SECCOMP_SET_MODE_FILTER);
+    printf("SECCOMP_FILTER_FLAG_NEW_LISTENER: 0x%lx\n", SECCOMP_FILTER_FLAG_NEW_LISTENER);
+    printf("SECCOMP_FILTER_FLAG_TSYNC       : 0x%lx\n", SECCOMP_FILTER_FLAG_TSYNC);
+    printf("SECCOMP_FILTER_FLAG_TSYNC_ESRCH : 0x%lx\n", SECCOMP_FILTER_FLAG_TSYNC_ESRCH);
+    printf("SECCOMP_FILTER_FLAG_LOG         : 0x%lx\n", SECCOMP_FILTER_FLAG_LOG);
+    printf("SECCOMP_FILTER_FLAG_SPEC_ALLOW  : 0x%lx\n", SECCOMP_FILTER_FLAG_LOG);
+    
     return 0;
 }
