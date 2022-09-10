@@ -228,7 +228,7 @@ int main(int argc, char **argv){
     printf("PTRACE_O_TRACEVFORKDONE  : 0x%08x\n", PTRACE_O_TRACEVFORKDONE); 
     printf("PTRACE_O_TRACEEXIT       : 0x%08x\n", PTRACE_O_TRACEEXIT); 
     
-    puts("====== PTRACE EVENT ENUMS =====");
+    puts("--------------------------------------------------------------------  ptrace event consts"); 
     printf("PTRACE_EVENT_FORK        : 0x%08x\n", PTRACE_EVENT_FORK);
     printf("PTRACE_EVENT_VFORK       : 0x%08x\n", PTRACE_EVENT_VFORK);
     printf("PTRACE_EVENT_CLONE       : 0x%08x\n", PTRACE_EVENT_CLONE);    

@@ -34,22 +34,26 @@ def readuntil(f, delim=b'\n',textwrap=False):
   return dat if not textwrap else dat.decode()
 
 def readline_after(f, skip_until, delim=b'\n'):
-  _ = read_until(f, skip_until)
-  if type(delim) is str: delim = delim.encode()
-  return read_until(f, delim).strip(delim)
+  _ = readuntil(f, skip_until)
+  if type(delim) is str: 
+    delim = delim.encode()
+  return readuntil(f, delim).strip(delim)
 
-def sendline(f, line):
+def sendline(f, line, nolf=False):
   if type(line) is str: 
     line = line.encode()
-  f.write(line + b'\n') 
+  if not nolf:
+    line = line + b'\n'
+  f.write(line) 
   f.flush()
 
 def sendline_after(f, waitfor, line):
-  read_until(f, waitfor)
+  readuntil(f, waitfor)
   sendline(f, line)
 
 def skips(f, nr):
-  for i in range(nr): read_until(f) 
+  for i in range(nr): 
+    readuntil(f) 
    
 def pQ(a): return struct.pack('<Q', a&0xffffffffffffffff)
 def uQ(a): return struct.unpack('<Q', a.ljust(8, b'\x00'))[0]
