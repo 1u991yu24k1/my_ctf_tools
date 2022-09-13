@@ -102,13 +102,33 @@ alias libc='ldd /bin/ls | grep "libc.so.6" | awk "{print \$3}"'
 alias musl-gcc='/usr/local/musl/bin/musl-gcc'
 alias musl-libc='/usr/lib/local/musl/lib/libc.so'
 
-alias cksec='gdb -ex "checksec" -ex "q"'
 function disas() {
   objdump -M intel -j.text -d $1
 }
 
-function ckcet () {
-  cksec $1 | /usr/bin/grep --color=none 'Intel CET'
+function gef_checksec () {
+  gdb -ex 'checksec' -ex 'quit' $1;  
+}
+
+function aslr() {
+  arg="$1"
+  aslr_procfs="/proc/sys/kernel/randomize_va_space"
+  if [ "x$arg" == "x" ]; then
+    # display aslr
+    #stat=$(cat "$aslr_procfs");
+    #echo "status : $stat";
+    if [ $(cat "$aslr_procfs") == "0" ]; then
+      echo "ASLR OFF"
+    else
+      echo "ASLR ON"; 
+    fi 
+  elif [ "x$arg" == "xon" ]; then
+    echo 2 > /proc/sys/kernel/randomize_va_space
+  elif [ "x$arg" == "xoff"]; then
+    echo 0 > /proc/sys/kernel/randomize_va_space
+  else
+    echo "Usage: aslr [on|off]"
+  fi
 }
 
 ### shellcode craft (check nullfree)
@@ -149,9 +169,12 @@ function scc32(){
     echo "[!] File $SCS not found ...";
   fi
 }
+
+
 function dockenter () {
   docker exec -it $1 /bin/bash;
 }
+
 
 alias dockimgs='docker images'
 alias dockcont='docker ps'

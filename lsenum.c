@@ -243,6 +243,7 @@ int main(int argc, char **argv){
     printf("SECCOMP_FILTER_FLAG_TSYNC_ESRCH : 0x%lx\n", SECCOMP_FILTER_FLAG_TSYNC_ESRCH);
     printf("SECCOMP_FILTER_FLAG_LOG         : 0x%lx\n", SECCOMP_FILTER_FLAG_LOG);
     printf("SECCOMP_FILTER_FLAG_SPEC_ALLOW  : 0x%lx\n", SECCOMP_FILTER_FLAG_LOG);
-    
+
+    printf("SECCOMP_USER_NOTIF_FLAG_CONTINUE: 0x%lx\n", SECCOMP_USER_NOTIF_FLAG_CONTINUE);    
     return 0;
 }
