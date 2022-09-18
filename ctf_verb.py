@@ -177,6 +177,24 @@ def mkasm(code):
   
 
 ############## Crypto ###############
+def ror(x, b, w=64):
+  """ rotate x right by b bits (width : w bits) """
+  assert(w > 0)
+  if b == w:
+    return x
+		
+  if b >= w:
+    b = b % w
+		
+  M = pow(2, w) - 1
+  tmp = x&(pow(2, b) - 1)
+  return tmp << (w - b) | (x >> b)&M
+
+
+def rol(x, b, w=64):
+  """ rotate x left by b bits(width: w bits) """
+  return ror(x, w - b, w)  
+
 
 def gcd(a,b):
   return math.gcd(a,b)
