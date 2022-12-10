@@ -50,13 +50,10 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ '
 else
-    #PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ '
 fi
-#unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -79,7 +76,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
@@ -92,15 +88,24 @@ alias clip='xclip -selection c' # <some_command> | clip ; => copy content to cli
 alias py='python3 -q'
 alias valgrind='valgrind -q'
 alias grep='grep --color=auto'
+alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
+alias nnln="grep -v '^$'"
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias statparse='awk "{printf(\"pid:%ld, %s, state:%c, ppid:%ld, pgrp:%ld\nutime:%lu, stime:%lu, cutime:%ld, cstime:%ld, priority:%ld, nice:%ld\nnum_threads:%ld, processor:%ld, starttime:%lu, vsize:0x%x\nstartcode:0x%x, endcode:0x%x\nstartstack:0x%x, kstkesp:0x%x, kstkeip:0x%x\nstart_data:0x%x, end_data:0x%x, start_brk:0x%x\narg_start:0x%x, arg_end:0x%x\nenv_start:0x%x, env_end:0x%x\n\", \$1,\$2,\$3,\$4,\$5,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$39,\$22,\$23,\$26,\$27,\$28,\$29,\$30,\$45,\$46,\$47,\$48,\$49,\$50,\$51);}"'
-
 alias statparselong='awk "{printf(\"pid:%ld, %s, state:%c\nppid:%ld, pgrp:%ld, session:%ld, tty_nr:%ld, tpgid:%ld, flags:0x%x\nminflt:%lu, cminflt:%lu, majflt:%lu, cmajflt:%lu\nutime:%lu, stime:%lu, cutime:%ld, cstime:%ld, priority:%ld, nice:%ld\nnum_threads:%ld, starttime:%lu\nvsize:0x%x, rss:%ld, rsslim:%ld\nstartcode:0x%x, endcode:0x%x\nstartstack:0x%x, kstkesp:0x%x, kstkeip:0x%x\nnswap:%ld, cnswap:%ld, exit_signal:%ld, processor:%ld\nrt_priority:%ld, policy:%ld, delayacct_blkio_status:%ld\nguest_time:%ld, cguest_time:%ld\nstart_data:0x%x, end_data:0x%x, start_brk:0x%x\narg_start:0x%x, arg_end:0x%x\nenv_start:0x%x, env_end:0x%x\nexit_code:%ld\n\", \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$22,\$23,\$24,\$25,\$26,\$27,\$28,\$29,\$30,\$36,\$37,\$38,\$39,\$40,\$41,\$42,\$43,\$44,\$45,\$46,\$47,\$48,\$49,\$50,\$51,\$52);}"'
+alias sshlist='grep -oP "^Host\s+([-.\w]+)" ~/.ssh/config'
+export PATH=$PATH:/exports/sde/sde-external-8.69.1-2021-07-18-lin
+export PYTHONWARNINGS='ignore';
 
+## pwnable utilities
+alias checksec='gdb -ex "checksec" -ex "quit"'
 alias libc='ldd /bin/ls | grep "libc.so.6" | awk "{print \$3}"'
 alias musl-gcc='/usr/local/musl/bin/musl-gcc'
 alias musl-libc='/usr/lib/local/musl/lib/libc.so'
+function ls-gefcmd() {
+  cat ~/.gdbinit-gef.py | perl -lne 'print $1 if /_cmdline_\s=\s"(\S+)"/' | sort
+}
 
 function disas() {
   objdump -M intel -j.text -d $1
@@ -111,27 +116,26 @@ function gef_checksec () {
 }
 
 function aslr() {
-  arg="$1"
-  aslr_procfs="/proc/sys/kernel/randomize_va_space"
-  if [ "x$arg" == "x" ]; then
-    # display aslr
-    #stat=$(cat "$aslr_procfs");
-    #echo "status : $stat";
-    if [ $(cat "$aslr_procfs") == "0" ]; then
-      echo "ASLR OFF"
-    else
-      echo "ASLR ON"; 
-    fi 
-  elif [ "x$arg" == "xon" ]; then
-    echo 2 > $aslr_procfs;
-    echo "ASLR ON";
+  arg="$1";
+  aslr_procfs="/proc/sys/kernel/randomize_va_space";
+  if [ "x$arg" == "xon" ]; then
+    echo 2 > $aslr_procfs; 
   elif [ "x$arg" == "xoff" ]; then
-    echo 0 > $aslr_procfs; 
-    echo "ASLR OFF";
+    echo 0 > $aslr_procfs;
   else
-    echo "Usage: aslr [on|off]"
+    if [ "$#" -eq 0 ]; then
+      # display status
+      if [ $(cat "$aslr_procfs") -eq 0 ]; then
+        echo "ASLR OFF";
+      else
+        echo "ASLR ON"; 
+      fi      
+    else
+      echo "Usage: aslr [on|off]";
+    fi
   fi
 }
+
 
 ### shellcode craft (check nullfree)
 function scc(){
@@ -179,16 +183,3 @@ function dockenter () {
 alias dockimgs='docker images'
 alias dockcont='docker ps'
 
-
-alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
-alias nnln="grep -v '^$'"
-
-alias sshlist='grep -oP "^Host\s+([-.\w]+)" ~/.ssh/config'
-export PATH=$PATH:/exports/sde/sde-external-8.69.1-2021-07-18-lin
-export PYTHONWARNINGS='ignore';
-
-## my pwnable utilities
-alias checksec='gdb -ex "checksec" -ex "quit"'
-function ls-gefcmd() {
-  cat ~/.gdbinit-gef.py | perl -lne 'print $1 if /_cmdline_\s=\s"(\S+)"/' | sort
-}
