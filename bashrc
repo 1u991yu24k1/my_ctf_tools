@@ -123,9 +123,11 @@ function aslr() {
       echo "ASLR ON"; 
     fi 
   elif [ "x$arg" == "xon" ]; then
-    echo 2 > /proc/sys/kernel/randomize_va_space
-  elif [ "x$arg" == "xoff"]; then
-    echo 0 > /proc/sys/kernel/randomize_va_space
+    echo 2 > $aslr_procfs;
+    echo "ASLR ON";
+  elif [ "x$arg" == "xoff" ]; then
+    echo 0 > $aslr_procfs; 
+    echo "ASLR OFF";
   else
     echo "Usage: aslr [on|off]"
   fi
@@ -170,14 +172,14 @@ function scc32(){
   fi
 }
 
-
+### Docker Utilities
 function dockenter () {
   docker exec -it $1 /bin/bash;
 }
-
-
 alias dockimgs='docker images'
 alias dockcont='docker ps'
+
+
 alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
 alias nnln="grep -v '^$'"
 
@@ -185,3 +187,8 @@ alias sshlist='grep -oP "^Host\s+([-.\w]+)" ~/.ssh/config'
 export PATH=$PATH:/exports/sde/sde-external-8.69.1-2021-07-18-lin
 export PYTHONWARNINGS='ignore';
 
+## my pwnable utilities
+alias checksec='gdb -ex "checksec" -ex "quit"'
+function ls-gefcmd() {
+  cat ~/.gdbinit-gef.py | perl -lne 'print $1 if /_cmdline_\s=\s"(\S+)"/' | sort
+}
