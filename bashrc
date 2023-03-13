@@ -103,6 +103,8 @@ alias checksec='gdb -ex "checksec" -ex "quit"'
 alias libc='ldd /bin/ls | grep "libc.so.6" | awk "{print \$3}"'
 alias musl-gcc='/usr/local/musl/bin/musl-gcc'
 alias musl-libc='/usr/lib/local/musl/lib/libc.so'
+
+## bata24/gef wrapper 
 function ls-gefcmd() {
   cat ~/.gdbinit-gef.py | perl -lne 'print $1 if /_cmdline_\s=\s"(\S+)"/' | sort
 }
@@ -113,6 +115,10 @@ function disas() {
 
 function gef_checksec () {
   gdb -ex 'checksec' -ex 'quit' $1;  
+}
+
+function ls-syscall() {
+  gdb -ex 'syscall-search -a X86 -m 64 ".*"' -ex 'quit'
 }
 
 function aslr() {
