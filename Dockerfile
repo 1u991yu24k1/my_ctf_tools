@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 
+FROM ubuntu:22.04 
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ Asia/Tokyo
@@ -31,3 +31,7 @@ COPY --from=skysider/glibc_builder64:2.23 /glibc/2.23/64 /glibc/2.23/64
 COPY --from=skysider/glibc_builder64:2.27 /glibc/2.27/64 /glibc/2.27/64
 COPY --from=skysider/glibc_builder64:2.31 /glibc/2.31/64 /glibc/2.31/64
 COPY --from=skysider/glibc_builder64:2.33 /glibc/2.33/64 /glibc/2.33/64
+
+## Run a following command 
+#  docker build -t pwnlab .
+#  docker run --privileged -it --rm --name pwnlab -v $(pwd):/root -p1337:1337 -p1234:1234
