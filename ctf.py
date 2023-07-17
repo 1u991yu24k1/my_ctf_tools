@@ -25,25 +25,28 @@ def sock(host, port):
   s = socket.create_connection((host, port))
   return s, s.makefile('rwb', buffering=None)
 
-def readuntil(f, delim=b'\n',textwrap=False):
+def readuntil(f, delim=b'\n', strip_delim=True, textwrap=False):
   if type(delim) is str: 
     delim = delim.encode()
   dat = b''
   while not dat.endswith(delim): 
     dat += f.read(1)
-  return dat if not textwrap else dat.decode()
+  dat = dat.rstrip(delim) if strip_delim else dat
+  dat = dat.decode() if textwrap else dat
+  return dat
 
-def readline_after(f, skip_until, delim=b'\n'):
+def readline_after(f, skip_until, delim=b'\n', strip_delim=True, textwrap=False):
   _ = readuntil(f, skip_until)
   if type(delim) is str: 
     delim = delim.encode()
-  return readuntil(f, delim).strip(delim)
+  return readuntil(f, delim, strip_delim, textwrap)
 
-def sendline(f, line, nolf=False):
+def sendline(f, line, taillf=True):
   if type(line) is str: 
     line = line.encode()
-  if not nolf:
+  if taillf:
     line = line + b'\n'
+  
   f.write(line) 
   f.flush()
 
@@ -56,7 +59,9 @@ def skips(f, nr):
     readuntil(f) 
    
 def pQ(a): return struct.pack('<Q', a&0xffffffffffffffff)
+def p(a): return struct.pack('<I', a&0xffffffff)
 def uQ(a): return struct.unpack('<Q', a.ljust(8, b'\x00'))[0]
+def u(a): return struct.pack('<I', a.ljust(4, b'\x00'))[0]
 
 def shell(s):
   t = telnetlib.Telnet()
