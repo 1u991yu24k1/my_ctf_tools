@@ -13,3 +13,31 @@ end
 define ddhx
   x/256xg $arg0
 end
+
+define offsetof
+  if $codebase == 0
+    codebase
+  end
+  p/x $arg0 - $codebase 
+end
+
+
+define reldq
+  if $codebase == 0 
+    codebase
+  end
+  set $_addr = $codebase + $arg0
+  ddh $_addr
+end
+
+define fddh
+  set $_i = 0
+  set $_base = $arg0
+  while ($_i < 0x20)
+    set $_addr = $_base + ($_i * 8) 
+    x/gx $_addr
+    set $_i = $_i + 1
+  end
+end
+  
+    

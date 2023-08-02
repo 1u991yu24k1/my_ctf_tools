@@ -1,4 +1,5 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
+
 
 WSDIR="/tmp/now"
 mkdir -p $WSDIR
