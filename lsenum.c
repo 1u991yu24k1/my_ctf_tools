@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <wchar.h>
+#include <string.h>
 #include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,7 +14,18 @@
 #include <sys/socket.h>
 #include <sys/ptrace.h>
 #include <seccomp.h>
+#include <asm/prctl.h>
+#include <sys/prctl.h>
 #include <linux/io_uring.h>
+
+
+#define FORMAT_ERROR(E) \
+    "\t\t\t:\t%4d\t: 0x%016lx : %s\n", -(E), (unsigned long)(-(E)), strerror((E))
+
+#define PRINT_FMT_ERROR(E) \
+    printf(#E FORMAT_ERROR(E))
+
+ 
 
 int main(int argc, char **argv){
     puts("======== sizeof(X)   =========");
@@ -33,47 +45,141 @@ int main(int argc, char **argv){
     printf("sizeof(unsigned long long) : %lu\n", sizeof(unsigned long long));
     printf("sizeof(time_t)             : %lu\n", sizeof(time_t));
     printf("sizeof(bool)               : %lu\n", sizeof(bool));
+    
     puts("======== ERROR ENUMS =========");
-    printf("EACCES       \t: %4d : 0x%lx\n", -EACCES, (unsigned long)(-EACCES));
-    printf("EINVAL       \t: %4d : 0x%lx\n", -EINVAL, (unsigned long)(-EINVAL));
-    printf("EBUSY        \t: %4d : 0x%lx\n", -EBUSY,  (unsigned long)(-EBUSY));
-    printf("EDQUOT       \t: %4d : 0x%lx\n", -EDQUOT, (unsigned long)(-EDQUOT));
-    printf("EEXSIST      \t: %4d : 0x%lx\n", -EACCES, (unsigned long)(-EEXIST));
-    printf("EFAULT       \t: %4d : 0x%lx\n", -EFAULT, (unsigned long)(-EFAULT));
-
-    printf("EFBIG        \t: %4d : 0x%lx\n", -EFBIG,  (unsigned long)(-EFBIG));
-    printf("EINTR        \t: %4d : 0x%lx\n", -EINTR,  (unsigned long)(-EINTR));
-    printf("EISDIR       \t: %4d : 0x%lx\n", -EISDIR, (unsigned long)(-EISDIR));
-    printf("ELOOP        \t: %4d : 0x%lx\n", -ELOOP,  (unsigned long)(-ELOOP));
-    
-    printf("EMFILE       \t: %4d : 0x%lx\n", -EMFILE, (unsigned long)(-EMFILE));
-    printf("EINTR        \t: %4d : 0x%lx\n", -EINTR,  (unsigned long)(-EINTR));
-    printf("EISDIR       \t: %4d : 0x%lx\n", -EISDIR, (unsigned long)(-EISDIR));
-    printf("ENAMETOOLONG \t: %4d : 0x%lx\n", -ENAMETOOLONG, (unsigned long)(-ENAMETOOLONG));
-    
-    printf("ENFILE       \t: %4d : 0x%lx\n", -ENFILE, (unsigned long)(-ENFILE));
-    printf("ENODEV       \t: %4d : 0x%lx\n", -ENODEV, (unsigned long)(-ENODEV));
-    printf("ENOENT       \t: %4d : 0x%lx\n", -ENOENT, (unsigned long)(-ENOENT));
-    printf("ENOMEM       \t: %4d : 0x%lx\n", -ENOMEM, (unsigned long)(-ENOMEM));
-    
-    printf("ENOSPC       \t: %4d : 0x%lx\n", -ENOSPC, (unsigned long)(-ENOSPC));
-    printf("ENOTDIR      \t: %4d : 0x%lx\n", -ENOTDIR,(unsigned long)(-ENOTDIR));
-    printf("ENXIO        \t: %4d : 0x%lx\n", -ENXIO,  (unsigned long)(-ENXIO));
-    printf("EOPNOTSUPP   \t: %4d : 0x%lx\n", -EOPNOTSUPP, (unsigned long)(-EOPNOTSUPP));
-    
-    printf("EOVERFLOW    \t: %4d : 0x%lx\n", -EOVERFLOW, (unsigned long)(-EOVERFLOW));
-    printf("EPERM        \t: %4d : 0x%lx\n", -EPERM,  (unsigned long)(-EPERM));
-    printf("EROFS        \t: %4d : 0x%lx\n", -EROFS,  (unsigned long)(-EROFS));
-    printf("ETXTBSY      \t: %4d : 0x%lx\n", -ETXTBSY,(unsigned long)(-ETXTBSY));
-
-    printf("EWOULDBLOCK  \t: %4d : 0x%lx\n", -EWOULDBLOCK, (unsigned long)(-EWOULDBLOCK));
-    printf("EBADF        \t: %4d : 0x%lx\n", -EBADF,  (unsigned long)(-EBADF));
-    printf("ENOTDIR      \t: %4d : 0x%lx\n", -ENOTDIR,(unsigned long)(-ENOTDIR));
-    printf("EIO          \t: %4d : 0x%lx\n", -EIO,    (unsigned long)(-EIO));
-    printf("ELOOP        \t: %4d : 0x%lx\n", -ELOOP,  (unsigned long)(-ELOOP));
-    printf("EMLINK       \t: %4d : 0x%lx\n", -EMLINK, (unsigned long)(-EMLINK));
-    printf("EXDEV        \t: %4d : 0x%lx\n", -EXDEV,  (unsigned long)(-EXDEV));
-    printf("ESRCH        \t: %4d : 0x%lx\n", -ESRCH,  (unsigned long)(-ESRCH));    
+    /*
+        for e in $(seq 1 1 133); do errno $e |grep '^#' | cut -d' ' -f2 | perl -pe 's/(\w+)/PRINT_FMT_ERROR(\1);/';done
+    */
+    PRINT_FMT_ERROR(EPERM);
+    PRINT_FMT_ERROR(ENOENT);
+    PRINT_FMT_ERROR(ESRCH);
+    PRINT_FMT_ERROR(EINTR);
+    PRINT_FMT_ERROR(EIO);
+    PRINT_FMT_ERROR(ENXIO);
+    PRINT_FMT_ERROR(E2BIG);
+    PRINT_FMT_ERROR(ENOEXEC);
+    PRINT_FMT_ERROR(EBADF);
+    PRINT_FMT_ERROR(ECHILD);
+    PRINT_FMT_ERROR(EAGAIN);
+    PRINT_FMT_ERROR(ENOMEM);
+    PRINT_FMT_ERROR(EACCES);
+    PRINT_FMT_ERROR(EFAULT);
+    PRINT_FMT_ERROR(ENOTBLK);
+    PRINT_FMT_ERROR(EBUSY);
+    PRINT_FMT_ERROR(EEXIST);
+    PRINT_FMT_ERROR(EXDEV);
+    PRINT_FMT_ERROR(ENODEV);
+    PRINT_FMT_ERROR(ENOTDIR);
+    PRINT_FMT_ERROR(EISDIR);
+    PRINT_FMT_ERROR(EINVAL);
+    PRINT_FMT_ERROR(ENFILE);
+    PRINT_FMT_ERROR(EMFILE);
+    PRINT_FMT_ERROR(ENOTTY);
+    PRINT_FMT_ERROR(ETXTBSY);
+    PRINT_FMT_ERROR(EFBIG);
+    PRINT_FMT_ERROR(ENOSPC);
+    PRINT_FMT_ERROR(ESPIPE);
+    PRINT_FMT_ERROR(EROFS);
+    PRINT_FMT_ERROR(EMLINK);
+    PRINT_FMT_ERROR(EPIPE);
+    PRINT_FMT_ERROR(EDOM);
+    PRINT_FMT_ERROR(ERANGE);
+    PRINT_FMT_ERROR(EDEADLOCK);
+    PRINT_FMT_ERROR(ENAMETOOLONG);
+    PRINT_FMT_ERROR(ENOLCK);
+    PRINT_FMT_ERROR(ENOSYS);
+    PRINT_FMT_ERROR(ENOTEMPTY);
+    PRINT_FMT_ERROR(ELOOP);
+    PRINT_FMT_ERROR(ENOMSG);
+    PRINT_FMT_ERROR(EIDRM);
+    PRINT_FMT_ERROR(ECHRNG);
+    PRINT_FMT_ERROR(EL2NSYNC);
+    PRINT_FMT_ERROR(EL3HLT);
+    PRINT_FMT_ERROR(EL3RST);
+    PRINT_FMT_ERROR(ELNRNG);
+    PRINT_FMT_ERROR(EUNATCH);
+    PRINT_FMT_ERROR(ENOCSI);
+    PRINT_FMT_ERROR(EL2HLT);
+    PRINT_FMT_ERROR(EBADE);
+    PRINT_FMT_ERROR(EBADR);
+    PRINT_FMT_ERROR(EXFULL);
+    PRINT_FMT_ERROR(ENOANO);
+    PRINT_FMT_ERROR(EBADRQC);
+    PRINT_FMT_ERROR(EBADSLT);
+    PRINT_FMT_ERROR(EBFONT);
+    PRINT_FMT_ERROR(ENOSTR);
+    PRINT_FMT_ERROR(ENODATA);
+    PRINT_FMT_ERROR(ETIME);
+    PRINT_FMT_ERROR(ENOSR);
+    PRINT_FMT_ERROR(ENONET);
+    PRINT_FMT_ERROR(ENOPKG);
+    PRINT_FMT_ERROR(EREMOTE);
+    PRINT_FMT_ERROR(ENOLINK);
+    PRINT_FMT_ERROR(EADV);
+    PRINT_FMT_ERROR(ESRMNT);
+    PRINT_FMT_ERROR(ECOMM);
+    PRINT_FMT_ERROR(EPROTO);
+    PRINT_FMT_ERROR(EMULTIHOP);
+    PRINT_FMT_ERROR(EDOTDOT);
+    PRINT_FMT_ERROR(EBADMSG);
+    PRINT_FMT_ERROR(EOVERFLOW);
+    PRINT_FMT_ERROR(ENOTUNIQ);
+    PRINT_FMT_ERROR(EBADFD);
+    PRINT_FMT_ERROR(EREMCHG);
+    PRINT_FMT_ERROR(ELIBACC);
+    PRINT_FMT_ERROR(ELIBBAD);
+    PRINT_FMT_ERROR(ELIBSCN);
+    PRINT_FMT_ERROR(ELIBMAX);
+    PRINT_FMT_ERROR(ELIBEXEC);
+    PRINT_FMT_ERROR(EILSEQ);
+    PRINT_FMT_ERROR(ERESTART);
+    PRINT_FMT_ERROR(ESTRPIPE);
+    PRINT_FMT_ERROR(EUSERS);
+    PRINT_FMT_ERROR(ENOTSOCK);
+    PRINT_FMT_ERROR(EDESTADDRREQ);
+    PRINT_FMT_ERROR(EMSGSIZE);
+    PRINT_FMT_ERROR(EPROTOTYPE);
+    PRINT_FMT_ERROR(ENOPROTOOPT);
+    PRINT_FMT_ERROR(EPROTONOSUPPORT);
+    PRINT_FMT_ERROR(ESOCKTNOSUPPORT);
+    PRINT_FMT_ERROR(ENOTSUP);
+    PRINT_FMT_ERROR(EPFNOSUPPORT);
+    PRINT_FMT_ERROR(EAFNOSUPPORT);
+    PRINT_FMT_ERROR(EADDRINUSE);
+    PRINT_FMT_ERROR(EADDRNOTAVAIL);
+    PRINT_FMT_ERROR(ENETDOWN);
+    PRINT_FMT_ERROR(ENETUNREACH);
+    PRINT_FMT_ERROR(ENETRESET);
+    PRINT_FMT_ERROR(ECONNABORTED);
+    PRINT_FMT_ERROR(ECONNRESET);
+    PRINT_FMT_ERROR(ENOBUFS);
+    PRINT_FMT_ERROR(EISCONN);
+    PRINT_FMT_ERROR(ENOTCONN);
+    PRINT_FMT_ERROR(ESHUTDOWN);
+    PRINT_FMT_ERROR(ETOOMANYREFS);
+    PRINT_FMT_ERROR(ETIMEDOUT);
+    PRINT_FMT_ERROR(ECONNREFUSED);
+    PRINT_FMT_ERROR(EHOSTDOWN);
+    PRINT_FMT_ERROR(EHOSTUNREACH);
+    PRINT_FMT_ERROR(EALREADY);
+    PRINT_FMT_ERROR(EINPROGRESS);
+    PRINT_FMT_ERROR(ESTALE);
+    PRINT_FMT_ERROR(EUCLEAN);
+    PRINT_FMT_ERROR(ENOTNAM);
+    PRINT_FMT_ERROR(ENAVAIL);
+    PRINT_FMT_ERROR(EISNAM);
+    PRINT_FMT_ERROR(EREMOTEIO);
+    PRINT_FMT_ERROR(EDQUOT);
+    PRINT_FMT_ERROR(ENOMEDIUM);
+    PRINT_FMT_ERROR(EMEDIUMTYPE);
+    PRINT_FMT_ERROR(ECANCELED);
+    PRINT_FMT_ERROR(ENOKEY);
+    PRINT_FMT_ERROR(EKEYEXPIRED);
+    PRINT_FMT_ERROR(EKEYREVOKED);
+    PRINT_FMT_ERROR(EKEYREJECTED);
+    PRINT_FMT_ERROR(EOWNERDEAD);
+    PRINT_FMT_ERROR(ENOTRECOVERABLE);
+    PRINT_FMT_ERROR(ERFKILL);   
     
     puts("========= OPEN FLAGS ==========");
     printf("O_RDONLY   : 0x%08x\n", O_RDONLY);
@@ -235,6 +341,14 @@ int main(int argc, char **argv){
     printf("PTRACE_EVENT_CLONE       : 0x%08x\n", PTRACE_EVENT_CLONE);    
     printf("PTRACE_EVENT_VFORK_DONE  : 0x%08x\n", PTRACE_EVENT_VFORK_DONE); 
     printf("PTRACE_EVENT_EXIT        : 0x%08x\n", PTRACE_EVENT_EXIT);   
+
+    puts("--------------------------------------------------------------------  arch_prctl consts");
+    printf("ARCH_SET_GS              : 0x%08x\n", ARCH_SET_GS);
+    printf("ARCH_SET_FS              : 0x%08x\n", ARCH_SET_FS);
+    printf("ARCH_SET_CPUID           : 0x%08x\n", ARCH_SET_CPUID);
+    printf("ARCH_GET_FS              : 0x%08x\n", ARCH_GET_FS);
+    printf("ARCH_GET_GS              : 0x%08x\n", ARCH_GET_GS);
+    printf("ARCH_GET_CPUID           : 0x%08x\n", ARCH_GET_CPUID);
 
     /*
     puts("--------------------------------------------------------------------- seccomp consts");
