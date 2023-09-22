@@ -53,7 +53,7 @@ def sendline(f, line, taillf=True):
   f.flush()
 
 @timeout
-def readuntil(f, delim=b'\n', strip_delim=True, textwrap=False):
+def readuntil(f, delim=b'\n', strip_delim=False, textwrap=False):
   if type(delim) is str: 
     delim = delim.encode()
   dat = b''
