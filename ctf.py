@@ -3,6 +3,7 @@
 
 import socket, telnetlib, struct, sys, logging, signal, functools
 
+sys.set_int_max_str_digits(0) 
 logging.basicConfig(level=logging.DEBUG, format="[*] %(message)s")
 cs, ce = '\x1b[93;41m', '\x1b[0m' # white
 
@@ -54,11 +55,10 @@ def sendline(f, line, taillf=True):
 
 @timeout
 def readuntil(f, delim=b'\n', strip_delim=False, textwrap=False):
-  if type(delim) is str: 
-    delim = delim.encode()
+  if type(delim) is str: delim = delim.encode()
+  
   dat = b''
-  while not dat.endswith(delim): 
-    dat += f.read(1)
+  while not dat.endswith(delim): dat += f.read(1)
   dat = dat.rstrip(delim) if strip_delim else dat
   dat = dat.decode() if textwrap else dat
   return dat
@@ -66,8 +66,7 @@ def readuntil(f, delim=b'\n', strip_delim=False, textwrap=False):
 @timeout
 def readline_after(f, skip_until, delim=b'\n', strip_delim=True, textwrap=False):
   _ = readuntil(f, skip_until)
-  if type(delim) is str: 
-    delim = delim.encode()
+  if type(delim) is str: delim = delim.encode()
   return readuntil(f, delim, strip_delim, textwrap)
 
 @timeout

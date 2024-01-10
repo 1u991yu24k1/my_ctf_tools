@@ -12,7 +12,8 @@ import time
 import math
 from functools import reduce
 from operator import mul
-
+# ref: https://docs.python.org/3/library/stdtypes.html#integer-string-conversion-length-limitation 
+sys.set_int_max_str_digits(0) 
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 cs, ce = '\x1b[93;41m', '\x1b[0m' # white
 
