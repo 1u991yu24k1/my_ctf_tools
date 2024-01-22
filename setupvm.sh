@@ -16,6 +16,7 @@ apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses
 apt install -y rustc
 curl https://sh.rustup.rs -sSf | sh 
 cargo install rustfilt
+
 #TODO: add "$HOME/.cargo/bin" to $PATH in .bashrc
 ## scripting 
 apt install -y perl python3 python3-dev ruby ruby-dev php 
@@ -155,3 +156,13 @@ chmod +x /usr/local/bin/extract-vmlinux
 cd linux/
 make mrproper
 
+#  Stop and disable unused service
+## cups, cups-browsed
+systemctl stop cups && systemctl disable cups
+systemctl stop cups-browsed && systemctl disable cups-browsed
+## default apache2
+systemctl stop apache2 && systemctl disable apache2
+
+## avahi
+systemctl mask avahi-daemon && systemctl stop avahi-daemon && systemctl disable avahi-daemon
+systemctl stop avahi-daemon.socket && systemctl disable avahi-daemon.socket

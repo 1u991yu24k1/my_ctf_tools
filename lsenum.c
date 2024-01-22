@@ -9,6 +9,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sched.h>
 #include <errno.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -17,7 +18,7 @@
 #include <asm/prctl.h>
 #include <sys/prctl.h>
 #include <linux/io_uring.h>
-
+#include <linux/memfd.h>
 
 #define FORMAT_ERROR(E) \
     "\t\t\t:\t%4d\t: 0x%016lx : %s\n", -(E), (unsigned long)(-(E)), strerror((E))
@@ -350,6 +351,17 @@ int main(int argc, char **argv){
     printf("ARCH_GET_GS              : 0x%08x\n", ARCH_GET_GS);
     printf("ARCH_GET_CPUID           : 0x%08x\n", ARCH_GET_CPUID);
 
+    puts("--------------------------------------------------------------------  memfd_crate consts");
+    printf("MFD_CLOEXEC              : 0x%08x\n", MFD_CLOEXEC);
+    printf("MFD_ALLOW_SEALING        : 0x%08x\n", MFD_ALLOW_SEALING);
+    printf("MFD_HUGETLB              : 0x%08x\n", MFD_HUGETLB);
+    
+    puts("-------------------------------------------------------------------- clone flags");
+    printf("CLONE_NEWPID             : 0x%08x\n", CLONE_NEWPID);
+    printf("CLONE_NEWNS              : 0x%08x\n", CLONE_NEWNS);
+    printf("CLONE_NEWIPC             : 0x%08x\n", CLONE_NEWIPC);
+    printf("CLONE_NEWUSER            : 0x%08x\n", CLONE_NEWUSER);
+    printf("CLONE_NEWNET             : 0x%08x\n", CLONE_NEWNET);
     /*
     puts("--------------------------------------------------------------------- seccomp consts");
     printf("SECCOMP_SET_MODE_STRICT         : 0x%x\n", SECCOMP_SET_MODE_STRICT);
