@@ -35,9 +35,9 @@ apt update -y
 apt install -y open-vm-tools
 apt install -y vim git flex bison manpages nkf libncurses5 patch expect screen lsof lshw mlocate 
 apt install -y zip unzip rar unrar cpio p7zip-full lzip zstd
-apt install -y gcc g++ clang make automake autogen autoconf cmake ninjai llvm lld libclang-dev
+apt install -y gcc g++ clang make automake autogen autoconf cmake ninja-build llvm lld libclang-dev
 apt install -y clang-13 llvm-13 llvm-13-dev llvm-13-tools
-apt install -y binutils strace ltrace gdb gdbserver elfutils dwarves nasm rr dwarfdump patchelf
+apt install -y binutils strace ltrace gdb gdbserver elfutils dwarves nasm rr dwarfdump patchelf silversearcher-ag
 apt install -y gcc-multilib g++-multilib binutils-multiarch gdb-multiarch  
 apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses5:i386 libstdc++6:i386 libc6-dbg:i386
 apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev
@@ -53,6 +53,13 @@ apt install -y iproute2 wget curl tcpdump tshark netcat socat tcpick tcpflow ngr
 
 ## ssl/crypto
 apt install -y aespipe john hashcash openssl
+
+## setup git
+git config --global user.name "1u991yu24k1"
+git config --global user.email mycd9427@gmail.com
+git config --global core.editor /usr/bin/vim
+git config --global diff.indentHeuristic true
+
 
 apt install -y libcap-dev libgoogle-perftools-dev libncurses5-dev libsqlite3-dev libtcmalloc-minimal4 graphviz doxygen 
 apt install -y python3-pip python3-tabulate exiftool zipinfo 
@@ -74,11 +81,6 @@ apt install -y openssh-server dnsutils
 ## emulator/vmm
 apt install -y busybox-static qemu-user-static qemu-utils fakeroot u-boot-tools 
 
-## my development env setup 
-git config --global user.name "1u991yu24k1"
-git config --global user.email mycd9427@gmail.com
-git config --global core.editor /usr/bin/vim
-
 ## install non-apt tools
 python3 -m pip install --upgrade pip 
 python3 -m pip install hexdump pwntools z3-solver angr pycryptodome requests lit wllvm keystone-engine
@@ -93,13 +95,6 @@ chmod +x /usr/local/bin/docker-compose
 
 ### checksec
 wget https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec -O /usr/local/bin/checksec && chmod +x /usr/local/bin/checksec
-
-### rp++
-mkdir -p ~/dl && cd ~/dl
-git clone https://github.com/0vercl0k/rp
-cd rp/src/build 
-chmod u+x build-release.sh && ./build-release.sh
-cp -p ~/dl/rp/src/build/rp-lin-x64 /usr/local/bin/rp-lin-x64
 
 ### gef
 wget -q https://raw.githubusercontent.com/bata24/gef/dev/install.sh -O- | bash
