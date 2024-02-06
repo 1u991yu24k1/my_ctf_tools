@@ -40,7 +40,7 @@ apt install -y clang-13 llvm-13 llvm-13-dev llvm-13-tools
 apt install -y binutils strace ltrace gdb gdbserver elfutils dwarves nasm rr dwarfdump patchelf
 apt install -y gcc-multilib g++-multilib binutils-multiarch gdb-multiarch  
 apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses5:i386 libstdc++6:i386 libc6-dbg:i386
-apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev
+apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev fuse libfuse-dev
 
 ## scripting 
 apt install -y perl python3 python3-dev ruby ruby-dev php 
