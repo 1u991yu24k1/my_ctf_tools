@@ -203,6 +203,8 @@ cd /exports
 git clone --depth=1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
 wget -O /usr/local/bin/extract-vmlinux https://raw.githubusercontent.com/torvalds/linux/master/scripts/extract-vmlinux
 chmod +x /usr/local/bin/extract-vmlinux
+wget -O /usr/local/bin/decodecode https://raw.githubusercontent.com/torvalds/linux/master/scripts/decodecode
+chmod +x /usr/local/bin/decodecode
 cd linux/
 make mrproper
 
