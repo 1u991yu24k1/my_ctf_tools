@@ -89,8 +89,9 @@ gem install seccomp-tools
 gem install zsteg
 
 # docker/docker-compose
+DOCKER_COMPOSE_VER="v2.24.5"
 curl -fsSL https://get.docker.com/ | sh
-curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VER}/docker-compose-$(uname -s)-$(uname -m)"  -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
 ### checksec
