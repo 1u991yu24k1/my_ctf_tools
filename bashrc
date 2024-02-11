@@ -113,7 +113,7 @@ function disas() {
   objdump -M intel -j.text -d $1
 }
 
-function gef_checksec () {
+function gef-checksec () {
   gdb -ex 'checksec' -ex 'quit' $1;  
 }
 
@@ -142,6 +142,32 @@ function aslr() {
   fi
 }
 
+function ptrace_scope() {
+  arg="$1";
+  ptrace_scope_procfs="/proc/sys/kernel/yama/ptrace_scope";
+  if [ "x$arg" == "xon" ]; then
+    echo 1 > $ptrace_scope_procfs; 
+  elif [ "x$arg" == "xoff" ]; then
+    echo 0 > $ptrace_scope_procfs;
+  else
+    if [ "$#" -eq 0 ]; then
+      # display status
+      current_val=$(cat "$ptrace_scope_procfs")
+      if [ $current_val -eq 0 ]; then
+        echo "ptrace is allowed to ANY (ptrace_scope: 0)";
+      elif [ $current_val -eq 1 ]; then
+        echo "ptrace is allowed to child (ptrace_scope: 1)"; 
+      elif [ $current_val -eq 2 ]; then
+        echo "ptrace is allowed by only admin (ptrace_scope: 2)";
+      else
+        echo "ptrace is NOT allowed (ptrace_scope: 3)"
+      fi
+    else
+      echo "Usage: ptrace_scope [on|off]";
+    fi
+  fi
+ 
+}
 
 ### shellcode craft (check nullfree)
 function scc(){
@@ -186,6 +212,5 @@ function scc32(){
 function dockenter () {
   docker exec -it $1 /bin/bash;
 }
-alias dockimgs='docker images'
-alias dockcont='docker ps'
-
+alias dim='docker images'
+alias dps='docker ps'

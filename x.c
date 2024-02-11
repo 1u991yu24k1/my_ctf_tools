@@ -26,6 +26,15 @@
     perror(msg); \
     exit(EXIT_FAILURE); \
 }while(0)
+/*
+    debruiji pattern generator/offset finder
+    ref:
+      https://gist.github.com/crowell/77b601db16562ac49834  
+*/
+static const char *charset = "0123456789abcdefghijklmnopqrstuvwxyz"
+static void pattern_create(char *buf, size_t length) {
+    
+}
 
 /* kernel address resolver */
 // kernel base (text) without KASLR

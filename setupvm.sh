@@ -49,7 +49,7 @@ apt install -y perl python3 python3-dev ruby ruby-dev php
 apt install -y binwalk foremost scalpel zbar-tools ffmpeg sox qpdf testdisk sleuthkit kpartx pciutils squashfs-tools 
 
 ## networking 
-apt install -y iproute2 wget curl tcpdump tshark netcat socat tcpick tcpflow ngrep
+apt install -y iproute2 wget curl tcpdump tshark netcat socat tcpick tcpflow ngrep telnet
 
 ## ssl/crypto
 apt install -y aespipe john hashcash openssl
