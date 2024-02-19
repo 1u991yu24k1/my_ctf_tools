@@ -169,6 +169,31 @@ function ptrace_scope() {
  
 }
 
+function io_uring_stat () {
+  arg="$1";
+  procfs_iouring_stat="/proc/sys/kernel/io_uring_disabled";
+  if [ $# -eq 0 ]; then
+    stat=$(cat $procfs_iouring_stat);
+    if [ $stat -eq 0 ]; then
+      echo "io_uring is allowed";
+    elif [ $stat -eq 1 ]; then
+      echo "io_uring is restricted (available users: $(cat /proc/sys/kernel/io_uring_disabled))";
+    else:
+      echo "io_uring is disallowed";
+    fi 
+  elif [ $# -eq 1 ]; then
+    if [ "x$arg" == "xon" ]; then
+      echo 0 > $procfs_iouring_stat;
+    elif [ "x$arg" == "xrestricted" ]; then
+      echo 1 > $procfs_iouring_stat; 
+    elif [ "x$arg" == "xoff" ]; then
+      echo 2 > $procfs_iouring_stat; 
+    else:
+        echo "Unknown number arg (available only: \"on\"|\"restricted\"|\"off\")";
+    fi 
+  fi 
+}
+
 ### shellcode craft (check nullfree)
 function scc(){
   SCS="$1.s";

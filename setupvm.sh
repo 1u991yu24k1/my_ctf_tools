@@ -128,6 +128,7 @@ cd /exports
 apt install -y rustc
 curl https://sh.rustup.rs -sSf | sh 
 cargo install rustfilt
+cargo install ropr
 
 
 ## qemu system(i386, x86_64, arm, aarch64, riscv32, riscv64)
