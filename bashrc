@@ -99,7 +99,6 @@ export PATH=$PATH:/exports/sde/sde-external-8.69.1-2021-07-18-lin
 export PYTHONWARNINGS='ignore';
 
 ## pwnable utilities
-alias checksec='gdb -ex "checksec" -ex "quit"'
 alias libc='ldd /bin/ls | grep "libc.so.6" | awk "{print \$3}"'
 alias musl-gcc='/usr/local/musl/bin/musl-gcc'
 alias musl-libc='/usr/lib/local/musl/lib/libc.so'
@@ -115,6 +114,10 @@ function gef-checksec () {
 
 function gef-lssyscall() {
   gdb -ex 'syscall-search -a X86 -m 64 ".*"' -ex 'quit'
+}
+
+function gef-asmlist() {
+  gdb -ex 'asm-list -n' -ex 'quit'
 }
 
 function gef-update() {
