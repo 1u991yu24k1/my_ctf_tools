@@ -197,6 +197,13 @@ popd
 cmake -DLLVMCC=/usr/bin/clang -DLLVMCXX=/usr/bin/clang++ -DCMAKE_BUILD_TYPE=Release  ..
 
 make check && make install 
+cd ../.. # /exports
+
+### Xbyak
+git clone --depth 1 https://github.com/herumi/xbyak.git
+pushd xbyak
+make install 
+popd
 
 
 
