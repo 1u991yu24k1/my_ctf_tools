@@ -81,7 +81,7 @@ alias la='ls -A'
 alias l='ls -CF'
 alias gdb='gdb -q'
 alias dbg='gdb'
-alias relf='readelf -W'
+alias readelf='readelf -W'
 alias vi='vim'
 alias vw='view'
 alias clip='xclip -selection c' # <some_command> | clip ; => copy content to clipboard
@@ -105,20 +105,20 @@ alias musl-gcc='/usr/local/musl/bin/musl-gcc'
 alias musl-libc='/usr/lib/local/musl/lib/libc.so'
 
 ## bata24/gef wrapper 
-function ls-gefcmd() {
+function gef-lscmd() {
   cat ~/.gdbinit-gef.py | perl -lne 'print $1 if /_cmdline_\s=\s"(\S+)"/' | sort
-}
-
-function disas() {
-  objdump -M intel -j.text -d $1
 }
 
 function gef-checksec () {
   gdb -ex 'checksec' -ex 'quit' $1;  
 }
 
-function ls-syscall() {
+function gef-lssyscall() {
   gdb -ex 'syscall-search -a X86 -m 64 ".*"' -ex 'quit'
+}
+
+function gef-update() {
+  python3 /root/.gdbinit-gef.py --upgrade
 }
 
 function aslr() {
@@ -194,7 +194,11 @@ function io_uring_stat () {
   fi 
 }
 
-### shellcode craft (check nullfree)
+### shellcode utilities 
+function disas() {
+  objdump -M intel -j.text -d $1
+}
+
 function scc(){
   SCS="$1.s";
   SCO="$1.o";
@@ -204,6 +208,7 @@ function scc(){
     nasm -f elf64 -o $SCO $SCS;
     if [ -f $SCO ]; then
       objcopy --dump-section .text=$SCR $SCO;
+      # check nullfree
       objdump -M intel -d $SCO | grep -v '^$' | perl -pe 's/\b(00)\b/\033[31m\1\033[0m/g';
       BYTESZ=$(wc -c $SCR | cut -d' ' -f1);
       echo -e "\033[33m[+] shellcode assembled ${BYTESZ} bytes\033[0m"; 
