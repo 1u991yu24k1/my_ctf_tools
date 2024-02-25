@@ -21,7 +21,7 @@
 #include <linux/memfd.h>
 
 #define FORMAT_ERROR(E) \
-    "\t\t\t:\t%4d\t: 0x%016lx : %s\n", -(E), (unsigned long)(-(E)), strerror((E))
+    "  :\t%4d\t: 0x%016lx : %s\n", -(E), (unsigned long)(-(E)), strerror((E))
 
 #define PRINT_FMT_ERROR(E) \
     printf(#E FORMAT_ERROR(E))

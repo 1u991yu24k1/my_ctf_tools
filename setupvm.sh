@@ -76,7 +76,7 @@ cp ../bin/{extract,findkey,makekey,pkcrack,zipdecrypt} /usr/local/bin/
 
 
 ## server infra 
-apt install -y openssh-server dnsutils
+apt install -y openssh-server dnsutils cifs-utils smbclient
 
 ## emulator/vmm
 apt install -y busybox-static qemu-user-static qemu-utils fakeroot u-boot-tools 
@@ -199,33 +199,51 @@ cmake -DLLVMCC=/usr/bin/clang -DLLVMCXX=/usr/bin/clang++ -DCMAKE_BUILD_TYPE=Rele
 make check && make install 
 cd ../.. # /exports
 
-### Xbyak
+## Xbyak
 git clone --depth 1 https://github.com/herumi/xbyak.git
 pushd xbyak
 make install 
 popd
 
 
-
 ## Linux kernel source code
-cd /exports
+pushd /exports
 git clone --depth 1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+cd linux/
+make mrproper
+popd 
+
+### utilitiy tools for kernel 
 wget -O /usr/local/bin/extract-vmlinux https://raw.githubusercontent.com/torvalds/linux/master/scripts/extract-vmlinux
 chmod +x /usr/local/bin/extract-vmlinux
 wget -O /usr/local/bin/decodecode https://raw.githubusercontent.com/torvalds/linux/master/scripts/decodecode
 chmod +x /usr/local/bin/decodecode
-cd linux/
-make mrproper
 
-cd /exports
+## bata24/gef
+pushd /exports
+git clone https://github.com/bata24/gef.git
+popd
+
+## mytools
+pushd /exports
 git clone ctftools:1u991yu24k1/my_ctf_tools.git 
 cd my_ctf_tools
-## lsenum command 
-make && cp -p lsenum /usr/local/bin/lsenum && male clean
-cat gdb_init.txt >> ~/.gdbinit
-cp -r vimrc ~/.vimrc
-cp -r bashrc ~/.bashrc
-cp -r ctf.sh /usr/local/bin/ctf.sh && chmod +x /usr/local/bin/ctf.sh
 
-cd /exports
-git clone https://github.com/bata24/gef.git
+### build lsenum command 
+make && make install && male clean
+cat gdb_init.txt >> ~/.gdbinit
+cp vimrc ~/.vimrc
+cp ctf.sh /usr/local/bin/ctf.sh && chmod +x /usr/local/bin/ctf.sh
+cp bashrc ~/.bashrc 
+popd
+
+
+## depot_tools (for v8)
+pushd /exports
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+echo "export PATH=$(pwd)/depot_tools:\$PATH" >> ~/.bashrc
+popd
+
+
+## done 
+source ~/.bashrc
