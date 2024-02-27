@@ -125,7 +125,6 @@ mkdir -p /exports
 cd /exports 
 
 ## Rust(rustc, cargo)
-apt install -y rustc
 curl https://sh.rustup.rs -sSf | sh 
 cargo install rustfilt
 cargo install ropr
