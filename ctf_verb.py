@@ -252,6 +252,21 @@ def crt(xx, mm):
 rotword     = lambda word:word[1:] + word[:1]  #left shift
 inv_rotword = lambda word:word[-1:] + word[:-1]#right shift
 
+def pollard_rho(n):
+    """
+    return factor of n
+    if integer factorization failed, return 0 
+    reference:
+        http://www.cs.cmu.edu/afs/cs/academic/class/15451-f11/www/lectures/lect1122_Pollard.pdf
+    """
+    x, y, d = 2, 2, 1
+    f = lambda x:(pow(x, 2) + 1)%n
+    while d == 1:
+        x, y = f(x), f(f(y))
+        d = gcd(abs(x - y), n)
+    
+    return d if d != n else 0
+
 ### AES primitive over poly-ring
 xtime       = lambda x:x << 1 if x < 0x80 else ((x << 1) & 0xff) ^ 0x1b
 def mul_over2_8(x,y):
