@@ -23,21 +23,24 @@ end
 
 define mycontext
   echo  ##### context   #####\n
-  echo  \t##### registers #####\n
+  echo  ##### registers #####\n
   printf "\trip: 0x%016x\n", $rip
-  printf "\trbx: 0x%016x\n", $rbp
   printf "\trax: 0x%016x\n", $rax
   printf "\trbx: 0x%016x\n", $rbx
   printf "\trcx: 0x%016x\n", $rcx
   printf "\trdx: 0x%016x\n", $rdx
+  printf "\trdi: 0x%016x\n", $rdi
+  printf "\trsi: 0x%016x\n", $rsi
   printf "\tr8 : 0x%016x\n", $r8
   printf "\tr9 : 0x%016x\n", $r9
   printf "\tr10: 0x%016x\n", $r10
   printf "\tr11: 0x%016x\n", $r11
   printf "\tr12: 0x%016x\n", $r12
   printf "\tr13: 0x%016x\n", $r13
-  printf "\tr14: 0x%016x\n", $r15
-
+  printf "\tr14: 0x%016x\n", $r14
+  printf "\tr15: 0x%016x\n", $r15
+  printf "\trbp: 0x%016x\n", $rbp
+  printf "\teflags: 0x%016\n", $eflags 
   echo  ##### Code       #####\n
   x/16i $rip
   
@@ -49,6 +52,8 @@ define mycontext
     printf "rsp+%02x: 0x%016x\n", $_i, $_stk
     set $_i = $_i + 1
   end
+  echo ##### BackTrace ####\n
+  bt
 end
 
 

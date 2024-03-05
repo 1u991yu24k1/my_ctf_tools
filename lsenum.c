@@ -208,6 +208,7 @@ int main(int argc, char **argv){
     printf("_IOFBF     : 0x%08x\n", _IOFBF);
     
     puts("======== OPENAT/LINKAT FLAG ========");
+    printf("AT_EMPTY_PATH        : 0x%08x\n", AT_EMPTY_PATH);
     printf("AT_FDCWD             : 0x%08x\n", AT_FDCWD);
     printf("AT_SYMLINK_FOLLOW    : 0x%08x\n", AT_SYMLINK_FOLLOW);
     printf("AT_SYMLINK_NOFOLLOW  : 0x%08x\n", AT_SYMLINK_NOFOLLOW);

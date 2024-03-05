@@ -40,7 +40,8 @@ apt install -y clang-13 llvm-13 llvm-13-dev llvm-13-tools
 apt install -y binutils strace ltrace gdb gdbserver elfutils dwarves nasm rr dwarfdump patchelf silversearcher-ag
 apt install -y gcc-multilib g++-multilib binutils-multiarch gdb-multiarch  
 apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses5:i386 libstdc++6:i386 libc6-dbg:i386
-apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev
+apt install -y pkg-config libtool protobuf-compiler libprotobuf-dev 
+apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev libnl-3-dev libnl-route-3-dev
 
 ## scripting 
 apt install -y perl python3 python3-dev ruby ruby-dev php 
@@ -93,6 +94,7 @@ DOCKER_COMPOSE_VER="v2.24.5"
 curl -fsSL https://get.docker.com/ | sh
 curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VER}/docker-compose-$(uname -s)-$(uname -m)"  -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
+
 
 ### checksec
 wget https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec -O /usr/local/bin/checksec && chmod +x /usr/local/bin/checksec
@@ -204,6 +206,13 @@ pushd xbyak
 make install 
 popd
 
+## nsjail
+pushd /exports
+git clone https://github.com/google/nsjail.git
+cd nsjail 
+make -j && cp ./nsjail /usr/local/bin/nsjail
+make clean 
+popd
 
 ## Linux kernel source code
 pushd /exports
