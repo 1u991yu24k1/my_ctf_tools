@@ -1,4 +1,4 @@
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 
 #include <stdio.h>
 #include <wchar.h>
@@ -17,7 +17,10 @@
 #include <seccomp.h>
 #include <asm/prctl.h>
 #include <sys/prctl.h>
+#if __has_include(<linux/io_uring.h>)
 #include <linux/io_uring.h>
+#define HAS_IORING
+#endif
 #include <linux/memfd.h>
 
 #define FORMAT_ERROR(E) \
@@ -363,7 +366,8 @@ int main(int argc, char **argv){
     printf("CLONE_NEWIPC             : 0x%08x\n", CLONE_NEWIPC);
     printf("CLONE_NEWUSER            : 0x%08x\n", CLONE_NEWUSER);
     printf("CLONE_NEWNET             : 0x%08x\n", CLONE_NEWNET);
-    /*
+    printf("CLONE_NEWCGROUP          : 0x%08x\n", CLONE_NEWCGROUP);
+    printf("CLONE_NEWUTS             : 0x%08x\n", CLONE_NEWUTS);
     puts("--------------------------------------------------------------------- seccomp consts");
     printf("SECCOMP_SET_MODE_STRICT         : 0x%x\n", SECCOMP_SET_MODE_STRICT);
     printf("SECCOMP_SET_MODE_FILTER         : 0x%x\n", SECCOMP_SET_MODE_FILTER);
@@ -376,15 +380,23 @@ int main(int argc, char **argv){
     printf("SECCOMP_USER_NOTIF_FLAG_CONTINUE: 0x%lx\n", SECCOMP_USER_NOTIF_FLAG_CONTINUE);    
 
 
+#ifdef HAS_IORING
     puts("--------------------------------------------------------------------- io_uring");
     puts(  "================ io_uring_params->features ================");
+#ifdef IORING_FEAT_SUBMIT_STABLE
     printf("IORING_FEAT_SINGLE_MMAP         : 0x%x\n", IORING_FEAT_SINGLE_MMAP); 
+#endif
+
+#ifdef IORING_FEAT_NODROP
     printf("IORING_FEAT_NODROP              : 0x%x\n", IORING_FEAT_NODROP); 
+#endif /* IORING_FEAT_NODROP */
     printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
+#ifdef IORING_FEAT_RW_CUR_POS
     printf("IORING_FEAT_RW_CUR_POS          : 0x%x\n", IORING_FEAT_RW_CUR_POS); 
+#endif /* IORING_FEAT_RW_CUR_POS */
+#ifdef IORING_FEAT_SUBMIT_STABLE
     printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
-    printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
-    printf("IORING_FEAT_SUBMIT_STABLE       : 0x%x\n", IORING_FEAT_SUBMIT_STABLE); 
-    */
+#endif /* IORING_FEAT_SUBMIT_STABLE */
+#endif /* HAS_IORING */
     return 0;
 }
