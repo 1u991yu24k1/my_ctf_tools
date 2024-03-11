@@ -32,6 +32,19 @@ unsigned long getlibc(void){
     return libc;
 }
 
+static _sleep(long sec) {
+    long timespec[2] = {0};
+    timespec[0] = sec;
+    __asm__(
+        "mov rax, 35\n\t"
+        "mov rdi, %0\n\t"
+        "syscall"
+        :
+        : "r"(timespec)
+        : "rax", "rdi"
+    );
+}
+
 int main(int argc, char **argv){
 	  printf("[+] libc base 0x%lx\n", getlibc());
 	  return 0;

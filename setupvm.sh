@@ -33,7 +33,7 @@ apt update -y
 
 ## development tooling
 apt install -y open-vm-tools
-apt install -y vim git flex bison manpages nkf libncurses5 patch expect screen lsof lshw mlocate tree
+apt install -y vim git flex bison manpages nkf libncurses5 patch expect screen lsof lshw mlocate tree util-linux
 apt install -y zip unzip rar unrar cpio p7zip-full lzip zstd
 apt install -y gcc g++ clang make automake autogen autoconf cmake ninja-build llvm lld libclang-dev
 apt install -y clang-13 llvm-13 llvm-13-dev llvm-13-tools
