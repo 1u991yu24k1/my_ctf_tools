@@ -39,10 +39,10 @@ apt install -y gcc g++ clang make automake autogen autoconf cmake ninja-build ll
 apt install -y clang-13 llvm-13 llvm-13-dev llvm-13-tools
 apt install -y binutils strace ltrace gdb gdbserver elfutils dwarves nasm rr dwarfdump patchelf silversearcher-ag
 apt install -y gcc-multilib g++-multilib binutils-multiarch gdb-multiarch  
-apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses5:i386 libstdc++6:i386 libc6-dbg:i386
+apt install -y libc6-dbg libmpc-dev libmpfr-dev libelf-dev libc6:i386 libncurses5:i386 libstdc++6:i386 libc6-dbg:i386 
 apt install -y pkg-config libtool protobuf-compiler libprotobuf-dev 
-apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev libnl-3-dev libnl-route-3-dev
-
+apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev libnl-3-dev libnl-route-3-dev libmicrohttpd12
+apt install -y debuginfod
 ## scripting 
 apt install -y perl python3 python3-dev ruby ruby-dev php 
 
@@ -131,6 +131,11 @@ curl https://sh.rustup.rs -sSf | sh
 cargo install rustfilt
 cargo install ropr
 
+## Golang
+## Version 1.22.1(latest at 2024/03/31)
+wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz -O /tmp/go1.22.1.tar.gz
+tar -C /usr/local -xzf /tmp/go1.22.1.tar.gz
+echo 'PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
 
 ## qemu system(i386, x86_64, arm, aarch64, riscv32, riscv64)
 # uncomment deb-src(for apt build-dep)
@@ -242,7 +247,7 @@ make && make install && male clean
 cat gdb_init.txt >> ~/.gdbinit
 cp vimrc ~/.vimrc
 cp ctf.sh /usr/local/bin/ctf.sh && chmod +x /usr/local/bin/ctf.sh
-cp bashrc ~/.bashrc 
+# cp bashrc ~/.bashrc 
 popd
 
 
