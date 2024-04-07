@@ -105,3 +105,9 @@ let _curfile=expand("%:r")
 if _curfile == 'Makefile'
   set noexpandtab
 endif
+
+"vimで開いたとき, 最後にカーソルが合った場所に移動する. 
+augroup vimrcEx
+  au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
+  \ exe "normal g`\"" | endif
+augroup END
