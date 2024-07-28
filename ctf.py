@@ -28,7 +28,7 @@ def timeout(func):
 
   @functools.wraps(func)
   def wrapper(*args, **kwargs):
-    __TIMEOUT__ = 3
+    __TIMEOUT__ = 0
     try:
       signal.signal(signal.SIGALRM, handler) 
       signal.alarm(__TIMEOUT__)
@@ -84,6 +84,44 @@ def p(a): return struct.pack('<I', a&0xffffffff)
 def uQ(a): return struct.unpack('<Q', a.ljust(8, b'\x00'))[0]
 def u(a): return struct.pack('<I', a.ljust(4, b'\x00'))[0]
 
+def rol(x, rotate, bitwidth=32):
+  assert rotate < bitwidth
+  """
+  rotate left in bitwidth 
+  ex. 
+    0x11223344 -> 0x22334411 (8bit rotate left @32bit)
+    0x1122334455667788 -> 0x3344556677881122 (16bit rotate left @64bit) 
+  """
+  word_mask = (1 << bitwidth) - 1
+  right_mask = (1 << (bitwidth - rotate)) - 1
+  left = x&(word_mask - right_mask)
+  left >>= (bitwidth - rotate)
+  return ((x << rotate)&word_mask) | left
+
+def ror(x, rotate, bitwidth=32):
+  assert rotate < bitwidth
+  """
+  rotate right in bitwidth 
+  0x11223344 -> 0x44112233 (8bit rotate right @32bit)
+  0x1122334455667788 -> 0x7788112233445566 (16bit rotate right @64bit)
+  """
+  word_mask = (1 << bitwidth) - 1
+  right_mask = (1 << rotate) - 1
+  right = (x&right_mask)
+  shifter = bitwidth - rotate
+  return (right << shifter) | ((x >> rotate)&word_mask)
+
+ 
+
+## heap-helper
+def protect_ptr(pos, addr):
+  return ((pos >> 12)0xffffffffffffffff) ^ addr
+
+## MANGLE_PTR
+#def mangle_ptr(addr, key):
+#  return rol()
+
+ 
 def shell(s):
   t = telnetlib.Telnet()
   t.sock = s
