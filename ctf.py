@@ -115,7 +115,7 @@ def ror(x, rotate, bitwidth=32):
 
 ## heap-helper
 def protect_ptr(pos, addr):
-  return ((pos >> 12)0xffffffffffffffff) ^ addr
+  return ((pos >> 12)&0xffffffffffffffff) ^ addr
 
 ## MANGLE_PTR
 #def mangle_ptr(addr, key):
