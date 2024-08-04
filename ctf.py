@@ -70,6 +70,14 @@ def readline_after(f, skip_until, delim=b'\n', strip_delim=True, textwrap=False)
   return readuntil(f, delim, strip_delim, textwrap)
 
 @timeout
+def sendafter(f, waitfor, data):
+  if type(data) is str:
+    data = data.encode()
+  readuntil(f, waitfor)
+  f.write(data) 
+  f.flush() 
+
+@timeout
 def sendline_after(f, waitfor, line):
   readuntil(f, waitfor)
   sendline(f, line)
