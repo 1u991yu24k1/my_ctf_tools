@@ -44,6 +44,13 @@ def sock(host, port):
   s = socket.create_connection((host, port))
   return s, s.makefile('rwb', buffering=None)
 
+
+def nc(nc_argv):
+  toks = [tok for tok in filter(lambda x: x, nc_argv.split(' '))]
+  port = int(toks.pop())
+  ip = toks.pop()
+  return sock(ip, port)
+
 def sendline(f, line, taillf=True):
   if type(line) is str: 
     line = line.encode()

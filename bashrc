@@ -198,6 +198,32 @@ function io_uring_stat () {
   fi 
 }
 
+## unprivileged_userns_clone
+function userns_clone_stat () {
+  procfs_userns="/proc/sys/kernel/unprivileged_userns_clone";
+  apparmor="/proc/sys/kernel/apparmor_restrict_unprivileged_userns";
+  # get status 
+  procfs_stat=$(cat $procfs_userns);
+  apparmor_stat=$(cat $apparmor); 
+  
+  if [ $# -eq 0 ]; then
+    if [[ $procfs_stat -eq 0 || $apparmor_stat -eq 0 ]]; then
+      echo "unprivileged_userns_clone is NOT allowed";
+    else
+      echo "unprivileged_userns_clone is allowed";
+    fi
+  else
+    # configure parameters
+    if [[ "x$1" == "xon" ]]; then
+      echo 0 > $apparmor; 
+      echo 1 > $procfs_userns;
+    elif [[ "x$1" == "xoff" ]]; then
+      echo 0 > $procfs_userns;
+      echo 1 > $apparmor;
+    fi
+  fi
+}
+
 ### shellcode utilities 
 function disas() {
   objdump -M intel -j.text -d $1

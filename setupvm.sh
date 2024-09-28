@@ -66,6 +66,7 @@ apt install -y libcap-dev libgoogle-perftools-dev libncurses5-dev libsqlite3-dev
 apt install -y python3-pip python3-tabulate exiftool zipinfo 
 aptitude install libegl-mesa0
 
+## install pkcrack
 pushd ~/
 git clone https://github.com/keyunluo/pkcrack
 cd pkcrack
@@ -137,60 +138,8 @@ wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz -O /tmp/go1.22.1.tar.gz
 tar -C /usr/local -xzf /tmp/go1.22.1.tar.gz
 echo 'PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
 
-## qemu system(i386, x86_64, arm, aarch64, riscv32, riscv64)
-# uncomment deb-src(for apt build-dep)
-sed -i -e 's/^# \(deb-src\)/\1/g' /etc/apt/sources.list
-apt build-dep qemu ninja-build
-QEMU_VERSION="7.0.0"
-QM_VER="70"
-
-wget https://download.qemu.org/qemu-$(QEMU_VERSION).tar.xz
-tar xvJf qemu-$(QEMU_VERSION).tar.xz
-cd qemu-$(QEMU_VERSION)
-cp -r pc-bios /usr/local/share/qemu
-
-make clean
-
-### i386
-./configure --target-list=i386-softmmu && make -j
-mv build/qemu-system-i386 /usr/local/bin/qemu"$QM_VER"-system-i386
-ln -s /usr/local/bin/qemu"$QM_VER"-system-i386 /usr/local/bin/qemu-system-i386
-make clean
-
-### x64
-./configure --target-list=x86_64-softmmu && make -j
-mv build/qemu-system-x86_64 /usr/local/bin/qemu"$QM_VER"-system-x86_64
-ln -s /usr/local/bin/qemu"$QM_VER"-system-x86_64 /usr/local/bin/qemu-system-x86_64
-make clean
-
-### arm
-./configure --target-list=arm-softmmu && make -j
-mv build/qemu-system-arm /usr/local/bin/qemu"$QM_VER"-system-arm
-ln -s /usr/local/bin/qemu"$QM_VER"-system-arm /usr/local/bin/qemu-system-arm
-make clean
-
-### aarch64
-./configure --target-list=aarch64-softmmu && make -j
-mv build/qemu-system-aarch64 /usr/local/bin/qemu"$QM_VER"-system-aarch64
-ln -s /usr/local/bin/qemu"$QM_VER"-system-aarch64 /usr/local/bin/qemu-system-aarch64
-make clean
-
-### riscv32
-./configure --target-list=riscv32-softmmu && make -j
-mv build/qemu-system-riscv32 /usr/local/bin/qemu"$QM_VER"-system-riscv32
-ln -s /usr/local/bin/qemu"$QM_VER"-system-riscv32 /usr/local/bin/qemu-system-riscv32
-make clean
-
-### riscv64
-./configure --target-list=riscv64-softmmu && make -j
-mv build/qemu-system-riscv64 /usr/local/bin/qemu"$QM_VER"-system-riscv64
-ln -s /usr/local/bin/qemu"$QM_VER"-system-riscv64 /usr/local/bin/qemu-system-riscv64
-make clean
-
-unset QEMU_VERSION
-unset QM_VER
-
 cd /exports
+
 ## Klee
 git clone https://github.com/klee/klee.git
 cd klee
@@ -239,15 +188,15 @@ popd
 
 ## mytools
 pushd /exports
-git clone ctftools:1u991yu24k1/my_ctf_tools.git 
+git clone github:1u991yu24k1/my_ctf_tools
 cd my_ctf_tools
 
 ### build lsenum command 
-make && make install && male clean
+make && make install && make clean
 cat gdb_init.txt >> ~/.gdbinit
 cp vimrc ~/.vimrc
 cp ctf.sh /usr/local/bin/ctf.sh && chmod +x /usr/local/bin/ctf.sh
-# cp bashrc ~/.bashrc 
+cp bashrc ~/.bashrc 
 popd
 
 
