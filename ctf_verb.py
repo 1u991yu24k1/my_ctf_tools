@@ -32,32 +32,81 @@ def dbg(ss):
 def inf(ss):
   logging.info("[*] %s"%ss)
 
+
+def timeout(func):
+  def handler(signum, frame):
+    raise TimeoutError
+
+  @functools.wraps(func)
+  def wrapper(*args, **kwargs):
+    __TIMEOUT__ = 0
+    try:
+      signal.signal(signal.SIGALRM, handler) 
+      signal.alarm(__TIMEOUT__)
+      ret = func(*args, **kwargs)
+      signal.alarm(0) 
+      return ret
+    except TimeoutError:
+      print(f"[!] Timeout-ed in {func.__name__}({args}, {kwargs})")
+      sys.exit(1)
+  return wrapper
+
 def sock(host, port):
   s = socket.create_connection((host, port))
   return s, s.makefile('rwb', buffering=None)
 
-def read_until(f, delim=b'\n',textwrap=False):
-  if type(delim) is str: delim = delim.encode()
+def nc(nc_argv):
+  """convert nc command line into socket object
+  
+  Example:
+    'nc chall.ctf.com 1337' -> sock('chall.ctf.com', 1337)
+  """
+  toks = [tok for tok in filter(lambda x: x, nc_argv.split(' '))]
+  port = int(toks.pop())
+  ip = toks.pop()
+  return sock(ip, port)
+
+@timeout
+def readuntil(f, delim=b'\n', textwrap=False):
+  if type(delim) is str: 
+    delim = delim.encode()
+  
   dat = b''
-  while not dat.endswith(delim): dat += f.read(1)
+  while not dat.endswith(delim): 
+    dat += f.read(1)
+  
   return dat if not textwrap else dat.decode()
 
+@timeout
 def readline_after(f, skip_until, delim=b'\n'):
-  _ = read_until(f, skip_until)
-  if type(delim) is str: delim = delim.encode()
-  return read_until(f, delim).strip(delim)
+  _ = readuntil(f, skip_until)
+  if type(delim) is str: 
+    delim = delim.encode()
+  return readuntil(f, delim).strip(delim)
 
 def sendline(f, line):
-  if type(line) is str: line = (line + '\n').encode()
+  if type(line) is str: 
+    line = (line + '\n').encode()
+  
   f.write(line) # no tailing LF in bytes
   f.flush()
 
+@timeout
 def sendline_after(f, waitfor, line):
-  read_until(f, waitfor)
+  readuntil(f, waitfor)
   sendline(f, line)
 
+@timeout
+def sendafter(f, waitfor, data):
+  if type(data) is str:
+    data = data.encode()
+
+  _ = readuntil(f, waitfor)
+  f.write(data)
+  f.flush()
+
 def skips(f, nr):
-  for i in range(nr): read_until(f) 
+  for i in range(nr): readuntil(f) 
 
 ###################### pwn ########################   
 """
@@ -67,14 +116,18 @@ packing :
     X : little endian
     x : big endian
 """
-def pQ(a): return struct.pack('<Q', a&0xffffffffffffffff)
+def pQ(a): 
+  return struct.pack('<Q', a&0xffffffffffffffff)
+
 def __pQ(a):
   ## import structができないとき.
   a = a&0xffffffffffffffff
   ret = [(a >> i*8)&0xff for i in range(8)]
   return bytes(ret)
   
-def pq(a): return struct.pack('<q', a&0xffffffffffffffff)
+def pq(a): 
+  return struct.pack('<q', a&0xffffffffffffffff)
+
 def __pq(a):
   ## import structができないとき.
   a = a&0xffffffffffffffff
@@ -96,7 +149,21 @@ def uH(a): return struct.unpack('<H', a.ljust(2, b'\x00'))[0]
 def uh(a): return struct.unpack('<h', a)[0]
 def uB(a): return struct.unpack('B' , a)[0]
 
-def double_to_Q(f): return struct.unpack('<Q', struct.pack('<d', f))[0]
+
+# Floating Point Converter
+def f_to_u32(f): 
+  return struct.unpack('<I', struct.pack('<f', f))[0]
+
+def f_to_u64(d): 
+  return struct.unpack('<Q', struct.pack('<d', d))[0]
+
+def u_to_f32(d): 
+  """ unsigned int(u32, uint32_t) -> single floating point (float, f32) """
+  return struct.unpack('<f', struct.pack('<I', d))[0]
+
+def u_to_f64(q): 
+  """ unsigned long (u64, uint64_t) -> double floating point (double, f64) """
+  return struct.unpack('<d', struct.pack('<Q', q))[0]
 
 # big endian
 def PQ(a): return struct.pack('>Q', a&0xffffffffffffffff)
