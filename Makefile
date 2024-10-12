@@ -1,6 +1,6 @@
-CC := /usr/bin/gcc
+CC := /usr/bin/g++
 TARGET := lsenum
-SRC := lsenum.c
+SRC := lsenum.cc
 INSTALLDIR := /usr/local/bin
 
 all:

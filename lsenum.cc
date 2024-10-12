@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sched.h>
+#include <signal.h>
 #include <errno.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -184,6 +185,15 @@ int main(int argc, char **argv){
     PRINT_FMT_ERROR(EOWNERDEAD);
     PRINT_FMT_ERROR(ENOTRECOVERABLE);
     PRINT_FMT_ERROR(ERFKILL);   
+
+    puts("========= Signal Number ======= ");
+    printf("SIGHUP     : %04x\n", SIGHUP);
+    printf("SIGINT     : %04x\n", SIGINT);
+    printf("SIGQUIT    : %04x\n", SIGQUIT);
+    printf("SIGILL     : %04x\n", SIGILL);
+    printf("SIGTRAP    : %04x\n", SIGTRAP);
+    printf("SIGABRT    : %04x\n", SIGABRT);
+    printf("SIGSEGV    : %04x\n", SIGSEGV);
     
     puts("========= OPEN FLAGS ==========");
     printf("O_RDONLY   : 0x%08x\n", O_RDONLY);
