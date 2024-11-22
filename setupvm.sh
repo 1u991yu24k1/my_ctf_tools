@@ -48,6 +48,7 @@ apt install -y perl python3 python3-dev ruby ruby-dev php
 
 ## forensic
 apt install -y binwalk foremost scalpel zbar-tools ffmpeg sox qpdf testdisk sleuthkit kpartx pciutils squashfs-tools 
+apt install -y imagemagick libsixel-bin
 
 ## networking 
 apt install -y iproute2 wget curl tcpdump tshark netcat socat tcpick tcpflow ngrep telnet
