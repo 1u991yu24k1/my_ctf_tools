@@ -82,6 +82,8 @@ function setup_git() {
   git config --global user.email mycd9427@gmail.com
   git config --global core.editor /usr/bin/vim
   git config --global diff.indentHeuristic true
+  git config --global core.longpaths true
+  git config --global core.compression 0 
 }
 
 function setup_python() {
@@ -114,6 +116,16 @@ function setup_pkcrack() {
   cp -p ../bin/{extract,findkey,makekey,pkcrack,zipdecrypt} /usr/local/bin/ 
 }
 
+## setup john
+function setup_john() {
+  pushd /exports
+  git clone https://github.com/openwall/john -b bleeding-jumbo john
+  cd john/src/
+  ./configure
+  make -s clean && make -sj4
+  make install
+  popd 
+}
 
 # docker/docker-compose
 DOCKER_COMPOSE_VER="v2.24.5"
