@@ -252,6 +252,10 @@ chmod +x /usr/local/bin/decodecode
 ## bata24/gef
 pushd /exports
 git clone https://github.com/bata24/gef.git
+cd gef/
+sed -i 's/uv venv/uv venv --prompt gef-venv/' ./install-uv.sh
+chmod +x ./install-uv.sh
+./install-uv.sh
 popd
 
 ## mytools
