@@ -86,7 +86,7 @@ alias readelf='readelf -W'
 alias vi='vim'
 alias vw='view'
 alias clip='xclip -selection c' # <some_command> | clip ; => copy content to clipboard
-alias py='python3 -q'
+alias py='uv run python'
 alias valgrind='valgrind -q'
 alias grep='grep --color=auto'
 alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
