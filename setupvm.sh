@@ -2,7 +2,6 @@
 
 ### RUN THIS SCRIPT WITH ROOT USER!!!!
 #  Stop and disable unused service
-
 function disable_unused_service() {
   ## cups, cups-browsed
   systemctl stop cups && systemctl disable cups
@@ -21,7 +20,6 @@ function disable_unused_service() {
 
 
 function install_via_apt() {
-
   # remove libreoffice
   apt remove --purge libreoffice*
   apt remove --purge thunderbird
@@ -133,6 +131,7 @@ curl -fsSL https://get.docker.com/ | sh
 curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VER}/docker-compose-$(uname -s)-$(uname -m)"  -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
+
 ## yq (yaml)
 wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 chmod +x /usr/local/bin/yq
@@ -172,26 +171,30 @@ function install_dbg_symbol_for_libc() {
 mkdir -p /exports
 
 ## Rust(rustc, cargo)
-function setup_rust() {
-  echo "[+] Setup Rust Environment";
-  curl https://sh.rustup.rs -sSf | sh 
+echo "[+] Setup Rust Environment";
+curl https://sh.rustup.rs -sSf | sh 
   
-  echo "[+] Install attractive tools by Rust";
-  cargo install rustfilt
-  cargo install ropr
-  cargo install --git https://github.com/Aplet123/kctf-pow.git
-}
+echo "[+] Install attractive tools by Rust";
+cargo install rustfilt
+cargo install ropr
+cargo install --git https://github.com/Aplet123/kctf-pow.git
+
+
+setup_rust
+
+# setup uv
+echo "[*] Install uv"
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ## Golang
 ## Version 1.22.1(latest at 2024/03/31)
-function setup_golang() {
-  GOLANG_VERSION="1.22.1";
-  echo "[+] Install Golang (Version: ${GOLANG_VERSION})";
-  wget "https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" -O "/tmp/go${GOLANG_VERSION}.tar.gz"
-  tar -C /usr/local -xzf /tmp/go${GOLANG_VERSION}.tar.gz
-  echo 'PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
-  unset GOLANG_VERSION;
-}
+GOLANG_VERSION="1.22.1"
+
+echo "[+] Install Golang (Version: ${GOLANG_VERSION})";
+wget "https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" -O "/tmp/go${GOLANG_VERSION}.tar.gz"
+tar -C /usr/local -xzf /tmp/go${GOLANG_VERSION}.tar.gz
+echo 'PATH="$PATH:/usr/local/go/bin"' >> ~/.bashrc
+unset GOLANG_VERSION;
 
 
 
