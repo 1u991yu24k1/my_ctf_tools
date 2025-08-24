@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 #-*-coding:utf-8-*-
 
-import socket, telnetlib, struct, sys, logging, signal, functools
-import hexdump
-
-sys.set_int_max_str_digits(0) 
-logging.basicConfig(level=logging.DEBUG, format="[*] %(message)s")
-cs, ce = '\x1b[93;41m', '\x1b[0m' # white
+from ptrlib import *
 
 def dbg(ss):
   fmt = f"{ss}:"
@@ -20,87 +15,13 @@ def dbg(ss):
     fmt = fmt.rstrip(":")
   logging.debug(cs + fmt + ce)
 
-def inf(ss):
-  logging.info("%s"%ss)
-
-def timeout(func):
-  def handler(signum, frame):
-    raise TimeoutError
-
-  @functools.wraps(func)
-  def wrapper(*args, **kwargs):
-    __TIMEOUT__ = 0
-    try:
-      signal.signal(signal.SIGALRM, handler) 
-      signal.alarm(__TIMEOUT__)
-      ret = func(*args, **kwargs)
-      signal.alarm(0) 
-      return ret
-    except TimeoutError:
-      print(f"[!] Timeout-ed in {func.__name__}({args}, {kwargs})")
-      sys.exit(1)
-  return wrapper
-
-def sock(host, port):
-  s = socket.create_connection((host, port))
-  return s, s.makefile('rwb', buffering=None)
-
-
-def nc(nc_argv):
-  toks = [tok for tok in filter(lambda x: x, nc_argv.split(' '))]
-  port = int(toks.pop())
-  ip = toks.pop()
-  return sock(ip, port)
-
-def sendline(f, line, taillf=True):
-  if type(line) is str: 
-    line = line.encode()
-  if taillf:
-    line = line + b'\n'
   
-  f.write(line) 
-  f.flush()
-
-@timeout
-def readuntil(f, delim=b'\n', strip_delim=False, textwrap=False):
-  if type(delim) is str: delim = delim.encode()
-  
-  dat = b''
-  while not dat.endswith(delim): dat += f.read(1)
-  dat = dat.rstrip(delim) if strip_delim else dat
-  dat = dat.decode() if textwrap else dat
-  return dat
-
-@timeout
-def readline_after(f, skip_until, delim=b'\n', strip_delim=True, textwrap=False):
-  _ = readuntil(f, skip_until)
-  if type(delim) is str: delim = delim.encode()
-  return readuntil(f, delim, strip_delim, textwrap)
-
-@timeout
-def sendafter(f, waitfor, data):
-  if type(data) is str:
-    data = data.encode()
-  readuntil(f, waitfor)
-  f.write(data) 
-  f.flush() 
-
-@timeout
-def sendline_after(f, waitfor, line):
-  readuntil(f, waitfor)
-  sendline(f, line)
-
-@timeout
-def skips(f, nr):
-  for i in range(nr): 
-    readuntil(f) 
-   
 def pQ(a): return struct.pack('<Q', a&0xffffffffffffffff)
 def p(a): return struct.pack('<I', a&0xffffffff)
 def uQ(a): return struct.unpack('<Q', a.ljust(8, b'\x00'))[0]
 def u(a): return struct.unpack('<I', a.ljust(4, b'\x00'))[0]
 
-def rol(x, rotate, bitwidth=32):
+def rol(x, rotate, bitwidth=64):
   assert rotate < bitwidth
   """
   rotate left in bitwidth 
@@ -114,7 +35,7 @@ def rol(x, rotate, bitwidth=32):
   left >>= (bitwidth - rotate)
   return ((x << rotate)&word_mask) | left
 
-def ror(x, rotate, bitwidth=32):
+def ror(x, rotate, bitwidth=64):
   assert rotate < bitwidth
   """
   rotate right in bitwidth 
@@ -127,23 +48,17 @@ def ror(x, rotate, bitwidth=32):
   shifter = bitwidth - rotate
   return (right << shifter) | ((x >> rotate)&word_mask)
 
- 
-def shell(s):
-  t = telnetlib.Telnet()
-  t.sock = s
-  t.interact()
-    
+   
 
 ##### addrs/offsets of symbols, gadgets and consts #####
-HOST, PORT = '127.0.0.1', 1337 
-banner = 'local-> %s %d'%(HOST, PORT) 
-if len(sys.argv) == 2 and sys.argv[1] == 'r':
-  HOST, PORT = '<remote-host>', 1337
-  banner = 'remote-> %s %d'%(HOST, PORT)
+is_remote = len(sys.argv) > 1 and sys.argv[1] == 'r'
 
-inf(banner)
-s, f = sock(HOST, PORT)
+if is_remote:
+  s = Socket("")
+else:
+  s = Socket('127.0.0.1', 1337)
+
 ### exploit from here ###
 
 
-shell(s)
+s.interactive()
