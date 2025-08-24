@@ -16,6 +16,9 @@ def dbg(ss):
     fmt = fmt.rstrip(":")
   print(cs + fmt + ce)
 
+def pQ(x): return p64(x)
+def uQ(x): return u64(x)
+
 ##### addrs/offsets of symbols, gadgets and consts #####
 is_remote = len(sys.argv) > 1 and sys.argv[1] == 'r'
 
