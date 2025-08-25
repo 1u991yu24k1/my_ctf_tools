@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 #-*-coding:utf-8-*-
+
 import sys
 from ptrlib import *
 
 def dbg(ss):
   cs, ce = '\x1b[93;41m', '\x1b[0m' # white
-  fmt = f"{ss}:"
+  fmt = f"[+] {ss}:"
   try:
     val = eval(ss.encode())
     if type(val) is int:
