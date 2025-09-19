@@ -28,7 +28,7 @@ static void dbg(const char *fmt, ...)
   getchar();
 }
 
-_Noreturn static fatal(const char *msg, ...)
+_Noreturn static void fatal(const char *fmt, ...)
 {
   char buf[0x400] = {'\0'};
   int saved_errno = errno;
