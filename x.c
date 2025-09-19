@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <poll.h>
@@ -16,16 +17,44 @@
 #include <errno.h>
 #include <linux/userfaultfd.h>
 
-#define DBG(msg) do {\
-    int ch; \
-    puts(msg); \
-    ch = getchar(); \
-} while(0)
+__attribute__((format(printf, 1, 2)))
+static void dbg(const char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  vfprintf(stderr, fmt, args);
+  va_end(args);
+  fflush(stderr);
+  getchar();
+}
 
-#define errExit(msg) do{ \
-    perror(msg); \
-    exit(EXIT_FAILURE); \
-}while(0)
+_Noreturn static fatal(const char *msg, ...)
+{
+  char buf[0x400] = {'\0'};
+  int saved_errno = errno;
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, args);
+  va_end(args);
+
+  buf[sizeof(buf) - 1] = '\0';
+  errno = saved_errno;
+  perror(fmt);
+  exit(EXIT_FAILURE);
+  __builtin_unreachable();
+}
+
+static void bind_core(int cpu)
+{
+  cpu_set_t cpu_set;
+  CPU_ZERO(&cpu_set);
+  CPU_SET(core, &cpu_set);
+  if (sched_setaffinity(getpid(), sizeof(cpu_set), &cpu_set) < 0)
+    fatal("sched_setaffinity");
+  printf("[+] cpu bind #%d\n", cpu);
+  return ;
+}
+
 /*
     debruiji pattern generator/offset finder
     ref:
@@ -54,21 +83,21 @@ unsigned long kern_heap = 0ul,
 
 /* Debug */
 void ddhv(unsigned long *addr, const size_t qword_num){
-    for(size_t i = 0; i < qword_num - 1; i+=2){
-        unsigned long v1 = (unsigned long)addr[i];
-        unsigned long v2 = (unsigned long)addr[i + 1];
-        printf("[+%02lx]: 0x%016lx 0x%016lx\n", i , v1, v2);
-    }
+  for (size_t i = 0; i < qword_num - 1; i += 2) {
+    unsigned long v1 = (unsigned long)addr[i];
+    unsigned long v2 = (unsigned long)addr[i + 1];
+    printf("[+%02lx]: 0x%016lx 0x%016lx\n", i , v1, v2);
+  }
 }
 
 void ddh(unsigned long *addr, const size_t qword_num){
-    for(size_t i = 0; i < qword_num - 1; i+=2){
-        unsigned long v1 = (unsigned long)addr[i];
-        unsigned long v2 = (unsigned long)addr[i + 1];
-        if( v1 == 0ul && v2 == 0ul)
-            continue;
-        printf("[+%02lx]: 0x%016lx 0x%016lx\n", i , v1, v2);
-    }
+  for (size_t i = 0; i < qword_num - 1; i+=2){
+    unsigned long v1 = (unsigned long)addr[i];
+    unsigned long v2 = (unsigned long)addr[i + 1];
+    if (v1 == 0ul && v2 == 0ul)
+      continue;
+    printf("[+%02lx]: 0x%016lx 0x%016lx\n", i , v1, v2);
+  }
 }
 
 /* where be landed finally */
