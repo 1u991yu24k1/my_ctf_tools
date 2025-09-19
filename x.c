@@ -145,25 +145,25 @@ static struct uffd_ctx* setup_uffd(unsigned long addr, size_t pg_num, char *cpy_
     struct uffdio_register reg;
     struct uffd_ctx *ctx = NULL; 
     
-    if(addr&(PAGESIZE - 1))
-        errExit("addr is not page bound");
+    if (addr & (PAGESIZE - 1))
+      fatal("addr is not page bound");
 
     ctx = calloc(sizeof(struct uffd_ctx), 1);
-    if(!ctx)
-        errExit("create context");
+    if (!ctx)
+      fatal("create context");
     
     ctx->uffd = syscall(__NR_userfaultfd, O_NONBLOCK | O_CLOEXEC);
-    if(!ctx->uffd)
-        errExit("syscall userfautlfd");
+    if (!ctx->uffd)
+      fatal("syscall userfautlfd");
     
     stat = ioctl(ctx->uffd, UFFDIO_API, &api);
     if(stat < 0)
-        errExit("ioctl(userfaultfd(UFFDIO_API)");
+      fatal("ioctl(userfaultfd(UFFDIO_API)");
    
     printf("[+] mmap => 0x%lx\n", addr);
     ctx->addr = (unsigned long)mmap((void *)addr, NPAGES(pg_num), PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_FIXED, -1, 0); 
     if(ctx->addr == (unsigned long)MAP_FAILED || ctx->addr != addr)
-        errExit("mmap");
+      fatal("mmap");
     
     ctx->page_num = pg_num;
     
@@ -172,11 +172,11 @@ static struct uffd_ctx* setup_uffd(unsigned long addr, size_t pg_num, char *cpy_
     reg.range.start = addr;
     reg.range.len   = NPAGES(pg_num); 
     stat = ioctl(ctx->uffd, UFFDIO_REGISTER, &reg);
-    if(stat < 0)
-        errExit("ioctl(userfaultfd(UFFDIO_REGSITER)");
+    if (stat < 0)
+      fatal("ioctl(userfaultfd(UFFDIO_REGSITER)");
 
-    ctx->ptr      = cpy_src;
-    ctx->handler  = (void (*)(void *))callback; 
+    ctx->ptr = cpy_src;
+    ctx->handler = (void (*)(void *))callback; 
     return ctx;
 }
 
@@ -186,40 +186,38 @@ static void *monitor_uffd(void *arg){
     struct uffdio_copy cp;
     struct uffd_ctx *ctx = (struct uffd_ctx *)arg;
     if(!ctx)
-        errExit("userfaultfd ctx is null");
+      fatal("userfaultfd ctx is null");
 
     evt.fd = ctx->uffd;
     evt.events = POLLIN;
     puts("[*] start polling");
     while(poll(&evt, 1, -1) > 0){
-        ssize_t nbytes;
-        void *faulted = NULL;
-        if(evt.revents&POLLERR ||evt.revents&POLLHUP)
-            errExit("poll");
+      if (evt.revents & POLLERR || evt.revents & POLLHUP)
+        fatal("poll");
        
-        nbytes = read(ctx->uffd, &msg, sizeof(msg));
-        if(nbytes < 0 || nbytes != sizeof(msg))
-            errExit("read event");
+      ssize_t nbytes = read(ctx->uffd, &msg, sizeof(msg));
+      if(nbytes < 0 || nbytes != sizeof(msg))
+        fatal("read event");
 
-        if(msg.event != UFFD_EVENT_PAGEFAULT)
-            errExit("unlikely pagefault");
+      if (msg.event != UFFD_EVENT_PAGEFAULT)
+        fatal("unlikely pagefault");
         
-        faulted = (void *)msg.arg.pagefault.address;
-        if(faulted != (void *)ctx->addr)
-            errExit("Hmm, pagefaulted but, at unexptected address...");
+      void *faulted = (void *)msg.arg.pagefault.address;
+      if(faulted != (void *)ctx->addr)
+        fatal("Hmm, pagefaulted but, at unexptected address...");
 
-        printf("[+] faulted @ %p\n", (void *)ctx->addr);   
-        ctx->handler(faulted);
-        puts("[*] handler called");
-        /* post-handler */
-        cp.mode = 0;     
-        cp.src = (unsigned long)ctx->ptr;
-        cp.dst = (unsigned long)faulted;
-        cp.len = NPAGES(ctx->page_num);
-        if(ioctl(ctx->uffd, UFFDIO_COPY, &cp) < 0)
-            errExit("ioctl(UFFDIO_COPY)");
+      printf("[+] faulted @ %p\n", (void *)ctx->addr);   
+      ctx->handler(faulted);
+      puts("[*] handler called");
+      /* post-handler */
+      cp.mode = 0;     
+      cp.src = (unsigned long)ctx->ptr;
+      cp.dst = (unsigned long)faulted;
+      cp.len = NPAGES(ctx->page_num);
+      if (ioctl(ctx->uffd, UFFDIO_COPY, &cp) < 0)
+        fatal("ioctl(UFFDIO_COPY)");
 
-        break; 
+      break; 
     } 
     puts("exit uffd_fault_monitor");
 }
@@ -228,7 +226,7 @@ void dispatch_uffd_monitor(struct uffd_ctx *ctx, const char *name){
     int stat = pthread_create(&ctx->th, NULL, monitor_uffd, (void *)ctx);
     if(stat < 0){
         errno = stat;
-        errExit("pthread_create");
+        fatal("pthread_create");
     }
     printf("[+] start thread %s\n", name);
 }
