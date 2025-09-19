@@ -48,7 +48,7 @@ static void bind_core(int cpu)
 {
   cpu_set_t cpu_set;
   CPU_ZERO(&cpu_set);
-  CPU_SET(core, &cpu_set);
+  CPU_SET(cpu, &cpu_set);
   if (sched_setaffinity(getpid(), sizeof(cpu_set), &cpu_set) < 0)
     fatal("sched_setaffinity");
   printf("[+] cpu bind #%d\n", cpu);
