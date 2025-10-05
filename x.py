@@ -20,6 +20,18 @@ def dbg(ss):
 def pQ(x): return p64(x)
 def uQ(x): return u64(x)
 
+def mkasm(code):
+  # apt install -y nasm
+  open('/tmp/asm.s','w').write(code)
+  cmd =  '   nasm -fbin /tmp/asm.s -l/tmp/asm.lst -o /tmp/asm.bin'
+  cmd += ' && rm -f /tmp/asm.s /tmp/asm.lst'
+  p = subprocess.run([cmd], shell=True)
+  if p.returncode != 0: 
+    print(f"Aborted!: assemble error {p.returncode}, {p.stderr}")
+    sys.exit(1)
+  buf = open('/tmp/asm.bin','rb').read()
+  return buf
+ 
 ##### addrs/offsets of symbols, gadgets and consts #####
 is_remote = len(sys.argv) > 1 and sys.argv[1] == 'r'
 
