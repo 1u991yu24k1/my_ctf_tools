@@ -18,7 +18,9 @@ def dbg(ss):
   print(cs + fmt + ce)
 
 def pQ(x): return p64(x)
+def p(x): return p32(x)
 def uQ(x): return u64(x)
+def u(x): return u32(x)
 
 def mkasm(code):
   # apt install -y nasm
@@ -36,7 +38,7 @@ def mkasm(code):
 is_remote = len(sys.argv) > 1 and sys.argv[1] == 'r'
 
 if is_remote:
-  s = Socket("")
+  s = Socket("nc challenge.server.com 1337")
 else:
   s = Socket('127.0.0.1', 1337)
 
