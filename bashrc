@@ -125,6 +125,7 @@ function gef-update() {
   python3 /root/.gdbinit-gef.py --upgrade
 }
 
+## ASLR on/off switch, and show current status
 function aslr() {
   arg="$1";
   aslr_procfs="/proc/sys/kernel/randomize_va_space";
@@ -146,6 +147,7 @@ function aslr() {
   fi
 }
 
+# ptrace(2) scope 
 function ptrace_scope() {
   arg="$1";
   ptrace_scope_procfs="/proc/sys/kernel/yama/ptrace_scope";
@@ -173,6 +175,7 @@ function ptrace_scope() {
  
 }
 
+# io_uring
 function io_uring_stat () {
   arg="$1";
   procfs_iouring_stat="/proc/sys/kernel/io_uring_disabled";
@@ -200,6 +203,7 @@ function io_uring_stat () {
 
 ## unprivileged_userns_clone
 function userns_clone_stat () {
+  if [ -z $(command -v 
   procfs_userns="/proc/sys/kernel/unprivileged_userns_clone";
   apparmor="/proc/sys/kernel/apparmor_restrict_unprivileged_userns";
   # get status 
@@ -274,3 +278,12 @@ function dockenter () {
 }
 alias dim='docker images'
 alias dps='docker ps'
+
+# Disable wezterm user-vars precmd (slow)
+if declare -p precmd_functions >/dev/null 2>&1; then
+  new=()
+  for f in "${precmd_functions[@]}"; do
+    [[ "$f" == "__wezterm_user_vars_precmd" ]] || new+=("$f")
+  done
+  precmd_functions=("${new[@]}")
+fi

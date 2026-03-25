@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #-*-coding:utf-8-*-
 
-import sys
+import sys 
 from ptrlib import *
 
 def dbg(ss):
@@ -22,15 +22,18 @@ def p(x): return p32(x)
 def uQ(x): return u64(x)
 def u(x): return u32(x)
 
-def mkasm(code):
+def mkasm(code, remove_lst=True):
   # apt install -y nasm
   open('/tmp/asm.s','w').write(code)
   cmd =  '   nasm -fbin /tmp/asm.s -l/tmp/asm.lst -o /tmp/asm.bin'
-  cmd += ' && rm -f /tmp/asm.s /tmp/asm.lst'
+  if remove_lst:
+    cmd += ' && rm -f /tmp/asm.s /tmp/asm.lst'
+  
   p = subprocess.run([cmd], shell=True)
   if p.returncode != 0: 
     print(f"Aborted!: assemble error {p.returncode}, {p.stderr}")
     sys.exit(1)
+  
   buf = open('/tmp/asm.bin','rb').read()
   return buf
  
