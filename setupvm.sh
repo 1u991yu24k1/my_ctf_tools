@@ -45,6 +45,7 @@ function install_via_apt() {
   apt install -y pkg-config libtool protobuf-compiler libprotobuf-dev 
   apt install -y libcapstone-dev libseccomp-dev libssl-dev libelf-dev 
   apt install -y libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev 
+  apt install -y libglib2.0-dev
   apt install -y libnl-3-dev libnl-route-3-dev libmicrohttpd12
   apt install -y debuginfod
 
