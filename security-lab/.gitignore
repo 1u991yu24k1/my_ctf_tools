@@ -1,0 +1,4 @@
+security-lab/artifacts/
+security-lab/reports/*.raw.md
+security-lab/fuzz/corpus/
+security-lab/fuzz/crashes/

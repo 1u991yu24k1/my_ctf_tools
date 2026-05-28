@@ -47,7 +47,7 @@ function install_via_apt() {
   apt install -y libmpfr-dev libslirp-dev fuse libfuse-dev liburing2 liburing-dev 
   apt install -y libglib2.0-dev
   apt install -y libnl-3-dev libnl-route-3-dev libmicrohttpd12
-  apt install -y debuginfod
+  apt install -y debuginfod libclang-rt-dev
 
   ## scripting 
   apt install -y perl php 

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CMD="${1:-}"
+
+case "$CMD" in
+  build-tsan)
+    ./security-lab/scripts/build-tsan.sh
+    ;;
+  build-asan)
+    ./security-lab/scripts/build-asan.sh
+    ;;
+  test-tsan)
+    ./security-lab/scripts/run-tests.sh tsan
+    ;;
+  test-asan)
+    ./security-lab/scripts/run-tests.sh asan
+    ;;
+  summarize)
+    python3 security-lab/scripts/summarize-artifacts.py
+    ;;
+  *)
+    echo "Usage: $0 {build-tsan|build-asan|test-tsan|test-asan|summarize}" >&2
+    exit 2
+    ;;
+esac
