@@ -1,3 +1,6 @@
+# [Install]
+# cp ./config.ghostty ./conpact.css ~/.config/ghostty/
+ 
 # リガチャー機能をoff
 font-feature = -liga
 font-feature = -clig
@@ -30,5 +33,18 @@ keybind = alt+shift+right=resize_split:right,10
 keybind = alt+shift+up=resize_split:up,10
 keybind = alt+shift+down=resize_split:down,10
 
-
+# タブバーの高さを調整したい場合, 
+#  windowhandle,
+#  headerbar,
+#  ...
+#  .titlebar {
+#      min-height: 24px; <- ここをいじる. 
+#  }
+#
+#  headerbar > box,
+#  ...
+#  tabbox {
+#    min-height: 20px; <- ここをいじる. 
+#  }
+# 24px -> 22px、20px -> 18px あたりが次の候補.
 gtk-custom-css = ~/.config/ghostty/compact.css
