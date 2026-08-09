@@ -1,0 +1,22 @@
+# リガチャー機能をoff
+font-feature = -liga
+font-feature = -clig
+font-feature = -dlig
+font-feature = -calt
+
+# 背景色を完全に黒にする.
+background = #000000
+
+# ANSI文字の彩色度高め. 
+palette = 1=#ff0000
+palette = 2=#00cc00
+palette = 3=#cccc00
+palette = 4=#0066ff
+
+palette = 9=#ff5555
+palette = 10=#00ff00
+palette = 11=#ffff00
+palette = 12=#5599ff
+
+# タイトルバーとタブバーを1段にまとめる
+gtk-titlebar-style = tabs
