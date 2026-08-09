@@ -15,3 +15,6 @@ palette = 9=#ff5555
 palette = 10=#00ff00
 palette = 11=#ffff00
 palette = 12=#5599ff
+
+# タイトルバーとタブバーを1段にまとめる
+gtk-titlebar-style = tabs
