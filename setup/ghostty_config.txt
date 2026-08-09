@@ -1,6 +1,8 @@
+# リガチャー機能をoff
 font-feature = -liga
 font-feature = -clig
 font-feature = -dlig
+font-feature = -calt
 
 # 背景色を完全に黒にする.
 background = #000000
