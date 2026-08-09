@@ -34,6 +34,7 @@ keybind = alt+shift+up=resize_split:up,10
 keybind = alt+shift+down=resize_split:down,10
 
 # タブバーの高さを調整したい場合, 
+# compact.css を修正する. 
 #  windowhandle,
 #  headerbar,
 #  ...
